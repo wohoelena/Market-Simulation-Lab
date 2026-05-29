@@ -3,28 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Trading Simulator</title>
+<title>Market Lab · Trading Simulator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#fff;--bg2:#f5f5f3;--bg3:#ebebea;
-  --text:#1a1a1a;--text2:#6b6b6b;--text3:#aaa;
-  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);
-  --up:#1D9E75;--dn:#D85A30;
-  --blue:#378ADD;--blue-bg:#E6F1FB;--blue-bd:#85B7EB;--blue-txt:#185FA5;
-  --r:8px;--rl:12px;
-}
-@media(prefers-color-scheme:dark){:root{
-  --bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#333;
-  --text:#e8e8e8;--text2:#999;--text3:#555;
-  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
-  --blue-bg:#0c2540;--blue-bd:#1e4a7a;--blue-txt:#7ab8f5;
-}}
+:root{--bg:#fff;--bg2:#f5f5f3;--bg3:#ebebea;--text:#1a1a1a;--text2:#6b6b6b;--text3:#aaa;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);--up:#1D9E75;--dn:#D85A30;--blue:#378ADD;--blue-bg:#E6F1FB;--blue-bd:#85B7EB;--blue-txt:#185FA5;--r:8px;--rl:12px;}
+@media(prefers-color-scheme:dark){:root{--bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#333;--text:#e8e8e8;--text2:#999;--text3:#555;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);--blue-bg:#0c2540;--blue-bd:#1e4a7a;--blue-txt:#7ab8f5;}}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;padding:20px;padding-bottom:60px}
-.page{max-width:760px;margin:0 auto}
+.page{max-width:780px;margin:0 auto}
 .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 h1{font-size:20px;font-weight:500}
+.badge{font-size:11px;background:var(--blue-bg);color:var(--blue-txt);border:0.5px solid var(--blue-bd);border-radius:20px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
 @media(max-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
 .sc{background:var(--bg2);border-radius:var(--r);padding:10px 12px}
@@ -50,7 +39,7 @@ h1{font-size:20px;font-weight:500}
 .mode-btn.ml{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}
 .mode-btn.ms{background:#FAECE7;color:#993C1D;border-color:#F0997B}
 .tr{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.tl{font-size:12px;color:var(--text2);width:60px;flex-shrink:0}
+.tl{font-size:12px;color:var(--text2);width:80px;flex-shrink:0}
 .ti{flex:1;min-width:70px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg2);color:var(--text);font-size:13px;font-family:inherit}
 .ti:focus{outline:none;border-color:var(--blue)}
 .tbtns{display:flex;gap:8px;flex-wrap:wrap}
@@ -61,6 +50,12 @@ h1{font-size:20px;font-weight:500}
 .bn{background:var(--bg2);color:var(--text);border-color:var(--border2);font-size:12px;padding:6px 14px}.bn:hover{background:var(--bg3)}
 .bx{background:var(--blue);color:#fff;border-color:var(--blue);font-size:13px;padding:8px 20px}.bx:hover{opacity:.9}
 .short-tip{font-size:11px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:8px 10px;margin-bottom:10px;line-height:1.6;display:none}
+.sl-tp-box{background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;display:block}
+.sl-tp-title{font-size:11px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.sl-tp-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.sl-lbl{font-size:11px;color:var(--text2);width:80px;flex-shrink:0}
+.sl-input{flex:1;min-width:60px;padding:5px 8px;border:0.5px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;font-family:inherit}
+.sl-input:focus{outline:none;border-color:var(--blue)}
 .hr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px}
 .hr:last-child{border-bottom:none}
 .htag{font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px}
@@ -70,10 +65,17 @@ h1{font-size:20px;font-weight:500}
 .day-b{font-size:12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:4px 10px;color:var(--text2)}
 .log{background:var(--bg2);border-radius:var(--r);padding:10px 12px;max-height:110px;overflow-y:auto}
 .le{font-size:11px;color:var(--text2);padding:1px 0;line-height:1.5}
-.le.ok{color:var(--up)}.le.er{color:var(--dn)}
+.le.ok{color:var(--up)}.le.er{color:var(--dn)}.le.warn{color:#BA7517}
 .loglbl{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px}
 .empty{font-size:12px;color:var(--text3)}
-.footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 8px;letter-spacing:.02em}
+.score-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:14px 16px;margin-bottom:14px}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.score-item{background:var(--bg2);border-radius:var(--r);padding:10px 12px;text-align:center}
+.score-val{font-size:22px;font-weight:500;margin-bottom:2px}
+.score-lbl{font-size:11px;color:var(--text2)}
+.score-bar-wrap{margin-top:6px;background:var(--bg3);border-radius:4px;height:4px;overflow:hidden}
+.score-bar{height:4px;border-radius:4px;transition:width .5s}
+.score-tip{font-size:11px;color:var(--text2);margin-top:10px;line-height:1.6;padding:8px 10px;background:var(--bg2);border-radius:6px}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;overflow-y:auto;padding:20px}
 .modal-bg.show{display:block}
 .modal{background:var(--bg);border-radius:16px;max-width:680px;margin:0 auto;overflow:hidden}
@@ -88,7 +90,7 @@ h1{font-size:20px;font-weight:500}
 .rc-logo{width:42px;height:42px;border-radius:10px;background:#378ADD;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .rc-meta-title{font-size:15px;font-weight:500;color:#1a1a1a}
 .rc-meta-sub{font-size:11px;color:#888;margin-top:2px}
-.rc-tag{display:inline-block;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:500;margin-bottom:14px}
+.rc-tag{display:inline-block;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:500;margin-bottom:6px}
 .rc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .rc-stat{background:#f5f5f3;border-radius:8px;padding:8px 10px;text-align:center}
 .rc-stat-v{font-size:15px;font-weight:500;color:#1a1a1a}
@@ -108,103 +110,64 @@ h1{font-size:20px;font-weight:500}
 .rc-closing{text-align:center;padding:12px 14px;background:#E6F1FB;border-radius:10px;font-size:13px;color:#185FA5;line-height:1.7;margin-bottom:14px}
 .rc-footer-line{padding-top:12px;border-top:0.5px solid #e5e5e5;display:flex;justify-content:space-between}
 .rc-footer-line span{font-size:11px;color:#bbb}
+.rc-disclaimer{margin-top:10px;padding:8px 12px;background:#f5f5f3;border-radius:6px;font-size:10px;color:#aaa;line-height:1.6;text-align:center}
+.footer-wrap{text-align:center;padding:24px 0 8px}
+.footer-dev{font-size:12px;color:var(--text3);margin-bottom:8px}
+.footer-disc{font-size:11px;color:var(--text3);line-height:1.7;max-width:640px;margin:0 auto;padding:0 12px}
+.disc-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.disc-modal{background:#fff;border-radius:16px;max-width:540px;width:100%;color:#1a1a1a;max-height:90vh;overflow-y:auto}
+.disc-enter-btn{width:100%;padding:11px;font-size:14px;font-weight:500;border-radius:8px;border:none;background:#ddd;color:#999;font-family:inherit;transition:all .2s;cursor:not-allowed}
+.disc-enter-btn.ready{background:#378ADD;color:#fff;cursor:pointer}
+.disc-enter-btn.ready:hover{background:#185FA5}
 </style>
 </head>
 <body>
-<!-- Disclaimer Modal -->
-<div id="disclaimer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
-  <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-    <div style="padding:24px 28px 0">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+
+<div class="disc-overlay" id="disc-overlay">
+  <div class="disc-modal">
+    <div style="padding:24px 24px 0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span style="font-size:17px;font-weight:500;color:#1a1a1a">Important Disclaimer</span>
+        <span style="font-size:17px;font-weight:500">Important Disclaimer</span>
       </div>
-      <div style="background:#E6F1FB;border:0.5px solid #85B7EB;border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:12px;color:#185FA5;line-height:1.6">
-        Please read carefully before proceeding.
-      </div>
-      <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:18px">
-        <div style="display:flex;gap:11px;align-items:flex-start">
-          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          </div>
-          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Educational simulation only</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This is a fictional trading game for educational and training purposes only. All stocks, prices, and market events are entirely simulated and do not reflect any real securities or financial markets.</div></div>
-        </div>
-        <div style="display:flex;gap:11px;align-items:flex-start">
-          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-          </div>
-          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Not financial advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">Nothing in this simulator constitutes investment advice, a solicitation to buy or sell securities, or a recommendation of any financial product. Simulated performance does not predict real-world results.</div></div>
-        </div>
-        <div style="display:flex;gap:11px;align-items:flex-start">
-          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">No real money involved</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">All currency values are virtual with no monetary value. No real funds are deposited, traded, or at risk at any time.</div></div>
-        </div>
-        <div style="display:flex;gap:11px;align-items:flex-start">
-          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Seek professional advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">For real investment decisions, always consult a licensed financial advisor. Trading real securities involves substantial risk of loss and may not be suitable for all individuals.</div></div>
-        </div>
-        <div style="display:flex;gap:11px;align-items:flex-start">
-          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">No data collection</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This simulator does not collect, store, or share any personal data. All activity exists only in your current browser session.</div></div>
-        </div>
+      <div style="background:#E6F1FB;border:0.5px solid #85B7EB;border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:12px;color:#185FA5;line-height:1.6">Please read carefully before proceeding.</div>
+      <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:4px">
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">🖥️</div><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">Educational simulation only</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This is a fictional trading game for educational and training purposes only. All stocks, prices, and market events are entirely simulated and do not reflect any real securities or financial markets.</div></div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">🚫</div><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">Not financial advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">Nothing in this simulator constitutes investment advice, a solicitation to buy or sell securities, or a recommendation of any financial product. Simulated performance does not predict real-world results.</div></div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">💰</div><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">No real money involved</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">All currency values are virtual and have no monetary value. No real funds are deposited, traded, or at risk at any time.</div></div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">👤</div><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">Seek professional advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">For real investment decisions, always consult a licensed financial advisor. Trading real securities involves substantial risk of loss and may not be suitable for all individuals.</div></div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">🔒</div><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">No data collection</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This simulator does not collect, store, or share any personal data. All activity exists only in your current browser session.</div></div></div>
       </div>
     </div>
-    <div style="padding:16px 28px 22px;border-top:0.5px solid rgba(0,0,0,0.09);margin-top:4px">
+    <div style="padding:16px 24px 22px;border-top:0.5px solid rgba(0,0,0,0.08);margin-top:16px">
       <div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:14px">
-        <input type="checkbox" id="disc-check" style="width:15px;height:15px;margin-top:1px;cursor:pointer;accent-color:#378ADD;flex-shrink:0">
+        <input type="checkbox" id="disc-check" onchange="document.getElementById('disc-btn').classList.toggle('ready',this.checked)" style="width:15px;height:15px;margin-top:2px;cursor:pointer;accent-color:#378ADD;flex-shrink:0">
         <label for="disc-check" style="font-size:12px;color:#6b6b6b;cursor:pointer;line-height:1.5">I have read and understood the disclaimer above. I agree to use this simulator for educational purposes only and acknowledge that no real financial transactions are involved.</label>
       </div>
-      <button id="disc-btn" onclick="enterSim()" style="width:100%;padding:10px;font-size:14px;font-weight:500;border-radius:8px;cursor:pointer;border:0.5px solid #aaa;background:#f5f5f3;color:#aaa;font-family:inherit;transition:all .15s" disabled>
-        I Agree — Start Simulation
-      </button>
-      <div style="text-align:center;margin-top:10px;font-size:11px;color:#bbb">
-        &copy; 2025 Stock Trading Simulator &middot; Developed by Elena Zhang &middot; For educational use only
-      </div>
+      <button class="disc-enter-btn" id="disc-btn" onclick="enterSim()">I Agree — Start Simulation</button>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:#bbb">&copy; 2026 Market Lab &middot; Developed by Elena Zhang &middot; For educational use only</div>
     </div>
   </div>
 </div>
-<script>
-  document.getElementById('disc-check').addEventListener('change',function(){
-    var btn=document.getElementById('disc-btn');
-    if(this.checked){btn.style.background='#378ADD';btn.style.borderColor='#378ADD';btn.style.color='#fff';btn.disabled=false;}
-    else{btn.style.background='#f5f5f3';btn.style.borderColor='#aaa';btn.style.color='#aaa';btn.disabled=true;}
-  });
-  function enterSim(){
-    var el=document.getElementById('disclaimer-overlay');
-    el.style.opacity='0';el.style.transition='opacity .25s';
-    setTimeout(function(){el.style.display='none';},250);
-  }
-</script>
-
 
 <div class="page">
   <div class="hdr">
-    <h1>📈 Stock Trading Simulator</h1>
+    <div><h1>📈 Market Lab<span class="badge">Advanced</span></h1></div>
     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <span class="day-b" id="day-lbl">Day 1</span>
       <button class="btn bx" id="next-btn">Next Day →</button>
       <button class="btn bn" id="reset-btn">↺ Reset</button>
     </div>
   </div>
-
   <div class="news-b" id="news-b"></div>
-
   <div class="stats">
     <div class="sc"><div class="sl">💰 Cash</div><div class="sv" id="s-cash">$100,000</div></div>
     <div class="sc"><div class="sl">📊 Long Value</div><div class="sv" id="s-long">$0</div></div>
-    <div class="sc"><div class="sl">📉 Short P&L</div><div class="sv" id="s-short">$0</div></div>
+    <div class="sc"><div class="sl">📉 Short P&amp;L</div><div class="sv" id="s-short">$0</div></div>
     <div class="sc"><div class="sl">💼 Total Assets</div><div class="sv" id="s-total">$100,000</div></div>
-    <div class="sc"><div class="sl">📈 Total P&L</div><div class="sv" id="s-pnl">$0</div></div>
+    <div class="sc"><div class="sl">📈 Total P&amp;L</div><div class="sv" id="s-pnl">$0</div></div>
   </div>
-
   <div class="mkt" id="mkt"></div>
-
   <div class="card">
     <div class="card-hdr">
       <span class="card-title" id="c-title">Click a stock card to view candlestick chart</span>
@@ -212,45 +175,49 @@ h1{font-size:20px;font-weight:500}
     </div>
     <div id="kline-wrap"><canvas id="kline"></canvas></div>
   </div>
-
+  <div class="score-card">
+    <div class="card-hdr">
+      <span class="card-title">📊 Position Management Score</span>
+      <span style="font-size:11px;color:var(--text3)">Live</span>
+    </div>
+    <div class="score-grid">
+      <div class="score-item"><div class="score-val" id="sc-div" style="color:#378ADD">—</div><div class="score-lbl">Diversification</div><div class="score-bar-wrap"><div class="score-bar" id="sb-div" style="width:0%;background:#378ADD"></div></div></div>
+      <div class="score-item"><div class="score-val" id="sc-risk" style="color:#1D9E75">—</div><div class="score-lbl">Risk Control</div><div class="score-bar-wrap"><div class="score-bar" id="sb-risk" style="width:0%;background:#1D9E75"></div></div></div>
+      <div class="score-item"><div class="score-val" id="sc-disc" style="color:#BA7517">—</div><div class="score-lbl">Discipline</div><div class="score-bar-wrap"><div class="score-bar" id="sb-disc" style="width:0%;background:#EF9F27"></div></div></div>
+    </div>
+    <div class="score-tip" id="score-tip">Start trading to see your position management scores.</div>
+  </div>
   <div class="card">
     <div class="card-hdr">
-      <span class="card-title" id="tp-sel">Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— select a stock first</span></span>
+      <span class="card-title" id="trade-label">Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— select a stock first</span></span>
       <div class="mode-toggle">
         <button class="mode-btn ml" id="mode-long" onclick="setMode('long')">Long</button>
         <button class="mode-btn" id="mode-short" onclick="setMode('short')">Short</button>
       </div>
     </div>
-    <div id="short-tip" class="short-tip"><strong>Short selling:</strong> Borrow shares and sell them, then buy back at a lower price to profit. Margin required = price × qty × 50%. You lose if the price rises.</div>
-    <div class="tr">
-      <span class="tl">Price</span>
-      <span style="font-size:13px;font-weight:500;color:var(--text)" id="tp-price">—</span>
-      <span style="font-size:11px;color:var(--text2)" id="tp-held"></span>
-    </div>
-    <div class="tr">
-      <span class="tl">Qty (shares)</span>
-      <input type="number" id="qty" class="ti" min="1" value="100" step="100">
-      <span style="font-size:11px;color:var(--text2)" id="tp-cost"></span>
+    <div id="short-tip" class="short-tip"><strong>Short selling:</strong> Borrow shares and sell them, then buy back at a lower price to profit. Margin = price × qty × 50%. You lose if the price rises.</div>
+    <div class="tr"><span class="tl">Price</span><span style="font-size:13px;font-weight:500;color:var(--text)" id="tp-price">—</span><span style="font-size:11px;color:var(--text2)" id="tp-held"></span></div>
+    <div class="tr"><span class="tl">Qty (shares)</span><input type="number" id="qty" class="ti" min="1" value="100" step="100"><span style="font-size:11px;color:var(--text2)" id="tp-cost"></span></div>
+    <div class="sl-tp-box" id="sl-tp-box">
+      <div class="sl-tp-title">🛡️ Stop-Loss / Take-Profit (optional)</div>
+      <div class="sl-tp-row"><span class="sl-lbl">Stop-Loss</span><input type="number" id="sl-price" class="sl-input" placeholder="Auto-sell below this price" step="0.01"><span style="font-size:11px;color:var(--text3)" id="sl-hint"></span></div>
+      <div class="sl-tp-row"><span class="sl-lbl">Take-Profit</span><input type="number" id="tp-price-input" class="sl-input" placeholder="Auto-sell above this price" step="0.01"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Checked automatically each day</div>
     </div>
     <div class="tbtns" id="trade-btns">
-      <button class="btn bb" id="btn-buy">Buy (Long)</button>
-      <button class="btn bs" id="btn-sell">Sell (Close Long)</button>
+      <button class="btn bb" onclick="doBuy()">Buy (Long)</button>
+      <button class="btn bs" onclick="doSell()">Sell (Close Long)</button>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-title" style="margin-bottom:10px">Positions</div>
+    <div class="card-title" style="margin-bottom:10px">Open Positions</div>
     <div id="hld-list"><div class="empty">No open positions</div></div>
   </div>
-
   <div class="loglbl">Trade Log</div>
   <div class="log" id="log-el"></div>
-
-  <div class="footer" style="text-align:center;padding:24px 0 8px">
-    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Developed by Elena Zhang</div>
-    <div style="font-size:11px;color:var(--text3);line-height:1.7;max-width:600px;margin:0 auto;padding:0 12px">
-      <strong>Disclaimer:</strong> This simulator is for educational and training purposes only. All stocks, prices, and market events are entirely fictional. Nothing herein constitutes financial advice or a recommendation to buy or sell any security. No real funds are involved. Past simulated performance does not predict future results. Always consult a licensed financial advisor before making real investment decisions.
-    </div>
+  <div class="footer-wrap">
+    <div class="footer-dev">Developed by Elena Zhang</div>
+    <div class="footer-disc"><strong>Disclaimer:</strong> This simulator is for educational and training purposes only. All stocks, prices, and market events are entirely fictional. Nothing herein constitutes financial advice. No real funds are involved. Past simulated performance does not predict future results. Always consult a licensed financial advisor before making real investment decisions.</div>
   </div>
 </div>
 
@@ -273,97 +240,218 @@ const STOCKS=[
   {code:'BANK',name:'Big Bank',base:45,vol:0.02,sector:'Financials'},
   {code:'ENRG',name:'Clean Energy',base:88,vol:0.06,sector:'Energy'},
   {code:'CONS',name:'Consumer Blue Chip',base:210,vol:0.03,sector:'Consumer'},
+  {code:'MANU',name:'Advanced Mfg',base:66,vol:0.05,sector:'Industrial'},
+  {code:'HLTH',name:'HealthCare',base:155,vol:0.035,sector:'Healthcare'},
 ];
 const NEWS=[
-  {day:3,stock:'TECH',eff:1.12,msg:'📰 Tech Giant beats earnings — net profit up 35% YoY!'},
-  {day:5,stock:'ENRG',eff:0.85,msg:'📰 Oil prices plunge — clean energy stocks under pressure.'},
-  {day:7,stock:null,eff:0.94,msg:'📰 Fed surprise rate hike — broad market selloff.'},
-  {day:9,stock:'BANK',eff:1.08,msg:'📰 Central bank cuts reserve ratio — bank stocks rally!'},
-  {day:12,stock:'CONS',eff:1.15,msg:'📰 Consumer spending data beats estimates — blue chips surge!'},
-  {day:14,stock:null,eff:1.05,msg:'📰 Major stimulus package announced — markets rally across the board!'},
-  {day:16,stock:'TECH',eff:0.88,msg:'📰 Regulators call in tech executives — sector drops sharply.'},
-  {day:18,stock:null,eff:0.92,msg:'📰 Foreign capital outflows spike — panic selling across markets.'},
-  {day:20,stock:'ENRG',eff:1.2,msg:'📰 Clean energy subsidies exceed expectations — sector hits limit-up!'},
+  {day:2,stock:'TECH',eff:1.10,msg:'📰 Tech Giant wins major government contract — sector surges!'},
+  {day:4,stock:'ENRG',eff:0.87,msg:'📰 Oil prices plunge; clean energy subsidies disappoint.'},
+  {day:6,stock:null,eff:0.95,msg:'📰 Fed hikes rates 25bps — global markets under pressure.'},
+  {day:8,stock:'BANK',eff:1.07,msg:'📰 Central bank cuts reserve ratio — banks rally!'},
+  {day:10,stock:'HLTH',eff:1.13,msg:'📰 Health insurance policy boost — healthcare sector jumps!'},
+  {day:12,stock:'CONS',eff:1.12,msg:'📰 Consumer spending beats estimates — blue chips hit highs!'},
+  {day:14,stock:null,eff:1.04,msg:'📰 Major stimulus package announced — broad market rallies!'},
+  {day:15,stock:'MANU',eff:0.88,msg:'📰 Export data misses — industrials pull back.'},
+  {day:17,stock:'TECH',eff:0.86,msg:'📰 Regulators target tech firms — sector drops sharply!'},
+  {day:19,stock:null,eff:0.93,msg:'📰 Foreign capital outflows spike — panic selling.'},
+  {day:20,stock:'ENRG',eff:1.18,msg:'📰 EV sales beat forecasts — clean energy limit-up!'},
 ];
+const PSVG={
+  guardian:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#1D9E75"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#1D9E75"/><path d="M33 44 L40 42 L47 44 L47 52 Q40 56 33 52 Z" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#1D9E75"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#1D9E75"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#1D9E75"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#1D9E75"/></svg>`,
+  bull:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#FAECE7" stroke="#D85A30" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#D85A30"/><path d="M30 16 Q24 8 20 12" stroke="#D85A30" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M50 16 Q56 8 60 12" stroke="#D85A30" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#D85A30"/><path d="M40 57 L40 44 M36 48 L40 44 L44 48" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#D85A30"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#D85A30"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#D85A30" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#D85A30" transform="rotate(20,58,41)"/></svg>`,
+  bear:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#534AB7"/><circle cx="29" cy="13" r="5" fill="#534AB7"/><circle cx="51" cy="13" r="5" fill="#534AB7"/><circle cx="29" cy="13" r="3" fill="#EEEDFE"/><circle cx="51" cy="13" r="3" fill="#EEEDFE"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#534AB7"/><path d="M40 44 L40 57 M36 53 L40 57 L44 53" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#534AB7"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#534AB7"/></svg>`,
+  hunter:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#BA7517"/><rect x="44" y="18" width="14" height="5" rx="2" fill="#BA7517" stroke="#633806" stroke-width="1"/><rect x="22" y="19" width="10" height="4" rx="2" fill="#BA7517" stroke="#633806" stroke-width="1"/><rect x="32" y="18" width="12" height="5" rx="1" fill="#EF9F27"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#BA7517"/><rect x="38" y="43" width="4" height="9" rx="2" fill="white"/><circle cx="40" cy="56" r="2" fill="white"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#BA7517"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#BA7517"/></svg>`,
+  monk:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#888780"/><circle cx="36" cy="22" r="4" fill="none" stroke="#F1EFE8" stroke-width="1.5"/><circle cx="44" cy="22" r="4" fill="none" stroke="#F1EFE8" stroke-width="1.5"/><line x1="32" y1="22" x2="29" y2="21" stroke="#F1EFE8" stroke-width="1.5"/><line x1="48" y1="22" x2="51" y2="21" stroke="#F1EFE8" stroke-width="1.5"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#888780"/><circle cx="35" cy="50" r="2" fill="white"/><circle cx="40" cy="50" r="2" fill="white"/><circle cx="45" cy="50" r="2" fill="white"/><rect x="17" y="35" width="10" height="6" rx="3" fill="#888780" transform="rotate(-40,22,38)"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#888780"/><rect x="30" y="59" width="8" height="18" rx="3" fill="#888780"/><rect x="42" y="59" width="8" height="18" rx="3" fill="#888780"/></svg>`,
+  octopus:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#378ADD"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#378ADD"/><rect x="14" y="35" width="13" height="5" rx="2.5" fill="#378ADD" transform="rotate(-35,20,37)"/><rect x="14" y="44" width="13" height="5" rx="2.5" fill="#378ADD"/><rect x="14" y="52" width="13" height="5" rx="2.5" fill="#378ADD" transform="rotate(25,20,54)"/><rect x="53" y="35" width="13" height="5" rx="2.5" fill="#378ADD" transform="rotate(35,60,37)"/><rect x="53" y="44" width="13" height="5" rx="2.5" fill="#378ADD"/><rect x="53" y="52" width="13" height="5" rx="2.5" fill="#378ADD" transform="rotate(-25,60,54)"/><circle cx="40" cy="49" r="5" fill="white" opacity="0.9"/><line x1="40" y1="44" x2="40" y2="54" stroke="#378ADD" stroke-width="1.5"/><line x1="35" y1="49" x2="45" y2="49" stroke="#378ADD" stroke-width="1.5"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#378ADD"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#378ADD"/></svg>`,
+  flash:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#FBEAF0" stroke="#D4537E" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#D4537E"/><path d="M38 12 L34 20 L39 20 L35 30 L44 18 L39 18 Z" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#D4537E"/><path d="M44 43 L30 50 M46 48 L32 55" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#D4537E" transform="rotate(15,34,67)"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#D4537E" transform="rotate(-15,46,67)"/><rect x="16" y="42" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(-30,21,44)"/><rect x="53" y="36" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(45,58,38)"/></svg>`,
+  dualist:`<svg viewBox="0 0 80 100" width="80" height="100"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#3B6D11"/><line x1="34" y1="10" x2="30" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><line x1="46" y1="10" x2="50" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#3B6D11"/><path d="M36 44 L36 56 M33 47 L36 44 L39 47" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 56 L44 44 M41 53 L44 56 L47 53" stroke="#9FE1CB" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(20,58,41)"/></svg>`
+};
+const PINFO={
+  guardian:{name:'The Guardian',sub:'Risk Control Master',c:'#1D9E75',bg:'#E1F5EE'},
+  bull:{name:'The Raging Bull',sub:'Aggressive Long Player',c:'#D85A30',bg:'#FAECE7'},
+  bear:{name:'The Calm Bear',sub:'Contrarian Short Seller',c:'#534AB7',bg:'#EEEDFE'},
+  hunter:{name:'The News Hunter',sub:'News-Driven Trader',c:'#BA7517',bg:'#FAEEDA'},
+  monk:{name:'The Zen Observer',sub:'Patient Watcher',c:'#5F5E5A',bg:'#F1EFE8'},
+  octopus:{name:'The Diversifier',sub:'Balanced Multi-Holder',c:'#185FA5',bg:'#E6F1FB'},
+  flash:{name:'The Scalper',sub:'High-Frequency Trader',c:'#993556',bg:'#FBEAF0'},
+  dualist:{name:'The Dualist',sub:'Long & Short Strategist',c:'#27500A',bg:'#EAF3DE'}
+};
+
+function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%'}
+
+function enterSim(){
+  if(!document.getElementById('disc-check').checked)return;
+  const o=document.getElementById('disc-overlay');
+  o.style.transition='opacity .3s';o.style.opacity='0';
+  setTimeout(()=>o.remove(),320);
+}
 
 let G={},mode='long',selCode=null;
 
 function initG(){
   G={day:1,cash:100000,init:100000,
     stocks:STOCKS.map(s=>({...s,price:s.base,candles:[genOHLC(s.base,s.base)],history:[s.base]})),
-    longs:{},shorts:{},tradeLog:[],rawLog:['Game started! Initial capital: $100,000.']};
+    longs:{},shorts:{},sltp:{},
+    tradeLog:[],rawLog:[{msg:'Game started! Capital: $100,000. Stop-loss/take-profit and position scoring enabled.',type:''}],
+    slT:0,tpT:0};
 }
 function genOHLC(o,c){
   const h=+(Math.max(o,c)*(1+Math.random()*0.012)).toFixed(2);
   const l=+(Math.min(o,c)*(1-Math.random()*0.012)).toFixed(2);
   return{o:+o.toFixed(2),h,l,c:+c.toFixed(2)};
 }
-function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
-function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%'}
 function longVal(){return Object.entries(G.longs).reduce((s,[c,q])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?st.price*q:0);},0)}
 function shortPnl(){return Object.entries(G.shorts).reduce((s,[c,p])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?(p.entryPrice-st.price)*p.qty:0);},0)}
 function shortMargin(){return Object.entries(G.shorts).reduce((s,[c,p])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?st.price*p.qty*0.5:0);},0)}
 
+function getPersonaKey(){
+  const tl=G.tradeLog;
+  const sc=tl.filter(t=>t.action==='short').length;
+  const bc=tl.filter(t=>t.action==='buy').length;
+  const nc=tl.filter(t=>t.news).length;
+  const slC=Object.values(G.sltp).filter(r=>r&&r.sl).length;
+  const stocks=new Set(tl.map(t=>t.code)).size;
+  const freq={};tl.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
+  const mf=Math.max(0,...Object.values(freq));
+  if(sc>=4)return'bear';
+  if(sc>=2&&bc>=3)return'dualist';
+  if(slC>=3&&stocks>=3)return'guardian';
+  if(nc>=4)return'hunter';
+  if(tl.length>=18)return'flash';
+  if(stocks>=4&&mf<=3)return'octopus';
+  if(tl.length<=3)return'monk';
+  if(bc>=6&&slC===0)return'bull';
+  return'guardian';
+}
+
+function checkSLTP(){
+  Object.entries(G.sltp).forEach(([code,rules])=>{
+    const s=G.stocks.find(x=>x.code===code);
+    if(!s)return;
+    const qty=G.longs[code]||0;
+    if(qty<=0){delete G.sltp[code];return;}
+    if(rules.sl&&s.price<=rules.sl){
+      const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.slT++;
+      G.tradeLog.push({day:G.day,action:'sl',code,qty,price:s.price,news:false});
+      addLog(`🛡️ Day ${G.day} [STOP-LOSS] ${s.name} fell to $${s.price.toFixed(2)}. Auto-sold ×${qty}. Proceeds: ${fmt(v)}`,'warn');
+    }else if(rules.tp&&s.price>=rules.tp){
+      const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.tpT++;
+      G.tradeLog.push({day:G.day,action:'tp',code,qty,price:s.price,news:false});
+      addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} rose to $${s.price.toFixed(2)}. Auto-sold ×${qty}. Proceeds: ${fmt(v)}`,'ok');
+    }
+  });
+}
+
+function calcScores(){
+  const total=G.cash+longVal()+shortMargin()+shortPnl();
+  const lc=Object.keys(G.longs),ac=[...new Set([...lc,...Object.keys(G.shorts)])];
+  let div=0;
+  if(ac.length){
+    let mx=0;
+    lc.forEach(c=>{const s=G.stocks.find(x=>x.code===c);const p=(s?s.price*(G.longs[c]||0):0)/total;if(p>mx)mx=p;});
+    div=Math.round(Math.min(ac.length/4,1)*60+(mx>0.5?0:mx>0.4?20:40));
+  }
+  const slC=Object.keys(G.sltp).filter(c=>G.sltp[c].sl).length;
+  const slR=lc.length>0?slC/lc.length:0;
+  const mR=shortMargin()/Math.max(total,1);
+  const risk=Math.min(Math.round(slR*60+(mR<0.3?40:mR<0.5?20:0)),100);
+  const tr=G.tradeLog.length;
+  const fq=tr<=5?100:tr<=10?80:tr<=15?60:tr<=20?40:20;
+  const disc=Math.min(Math.round(fq*0.7+(G.slT+G.tpT)*5*0.3),100);
+  return{div,risk,disc};
+}
+
+function renderScores(){
+  if(!G.tradeLog.length&&!Object.keys(G.longs).length)return;
+  const {div,risk,disc}=calcScores();
+  const set=(id,val,bid)=>{
+    const el=document.getElementById(id),bar=document.getElementById(bid);
+    el.textContent=val+'pts';
+    bar.style.width=val+'%';
+    el.style.color=val>=80?'#1D9E75':val>=60?'#BA7517':'#D85A30';
+    bar.style.background=val>=80?'#1D9E75':val>=60?'#EF9F27':'#D85A30';
+  };
+  set('sc-div',div,'sb-div');set('sc-risk',risk,'sb-risk');set('sc-disc',disc,'sb-disc');
+  const tips=[];
+  if(div<60)tips.push('Portfolio too concentrated. Try spreading across 3+ stocks with no single position above 40%.');
+  if(risk<60)tips.push('Risk control weak. Set stop-loss orders for each long position to protect capital.');
+  if(disc<60)tips.push('Trading too frequently. Plan each trade before entering to reduce emotional decisions.');
+  document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ Great position management! Keep diversifying, setting stop-losses, and trading with discipline.';
+}
+
 function drawKline(code){
   const s=G.stocks.find(x=>x.code===code);
-  const wrap=document.getElementById('kline-wrap');
-  const canv=document.getElementById('kline');
+  const wrap=document.getElementById('kline-wrap'),canv=document.getElementById('kline');
   const W=wrap.clientWidth,H=180;
   canv.width=W;canv.height=H;
-  const ctx=canv.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  const candles=s.candles,n=candles.length;
-  if(!n)return;
+  const ctx=canv.getContext('2d');ctx.clearRect(0,0,W,H);
+  const candles=s.candles,n=candles.length;if(!n)return;
   const allH=candles.map(c=>c.h),allL=candles.map(c=>c.l);
   const maxP=Math.max(...allH),minP=Math.min(...allL);
   const range=maxP-minP||maxP*0.02||1;
-  const padT=16,padB=24,padL=52,padR=14;
-  const chartW=W-padL-padR,chartH=H-padT-padB;
-  const slotW=chartW/n,bodyW=Math.max(3,Math.min(slotW*0.6,20));
-  const toY=p=>padT+chartH*(1-(p-minP)/range);
-  const toX=i=>padL+slotW*i+slotW/2;
-  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
-  const gridCol=isDark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
-  const lblCol=isDark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.38)';
+  const pT=16,pB=24,pL=52,pR=14,cW=W-pL-pR,cH=H-pT-pB;
+  const slotW=cW/n,bodyW=Math.max(3,Math.min(slotW*0.6,18));
+  const toY=p=>pT+cH*(1-(p-minP)/range);
+  const toX=i=>pL+slotW*i+slotW/2;
+  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gc=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
+  const lc=dark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.38)';
   ctx.font='11px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';
-  [0,0.25,0.5,0.75,1].forEach(r=>{
-    const y=padT+r*chartH;
-    ctx.strokeStyle=gridCol;ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
-    ctx.fillStyle=lblCol;ctx.fillText('$'+(maxP-r*range).toFixed(1),padL-6,y);
+  [0,.25,.5,.75,1].forEach(r=>{
+    const y=pT+r*cH;
+    ctx.strokeStyle=gc;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+    ctx.fillStyle=lc;ctx.fillText('$'+(maxP-r*range).toFixed(1),pL-6,y);
   });
   candles.forEach((c,i)=>{
-    const x=toX(i),isUp=c.c>=c.o,col=isUp?'#1D9E75':'#D85A30';
-    ctx.strokeStyle=col;ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(x,toY(c.h));ctx.lineTo(x,toY(c.l));ctx.stroke();
+    const x=toX(i),up=c.c>=c.o,col=up?'#1D9E75':'#D85A30';
+    ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,toY(c.h));ctx.lineTo(x,toY(c.l));ctx.stroke();
     const top=toY(Math.max(c.o,c.c)),bot=toY(Math.min(c.o,c.c));
     ctx.fillStyle=col;ctx.fillRect(x-bodyW/2,top,bodyW,Math.max(2,bot-top));
   });
-  ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=lblCol;
+  const rules=G.sltp[code];
+  if(rules&&G.longs[code]){
+    const dl=(price,col,lbl,above)=>{
+      if(!price||price<minP||price>maxP)return;
+      const y=toY(price);
+      ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle=col;ctx.font='10px sans-serif';ctx.textAlign='left';
+      ctx.textBaseline=above?'bottom':'top';
+      ctx.fillText(lbl+price.toFixed(1),pL+2,above?y-2:y+2);
+    };
+    dl(rules.sl,'#D85A30','SL ',false);dl(rules.tp,'#1D9E75','TP ',true);
+  }
+  ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=lc;
   const step=Math.max(1,Math.ceil(n/6));
   candles.forEach((_,i)=>{if(i%step===0||i===n-1)ctx.fillText('D'+(i+1),toX(i),H-6);});
-  document.getElementById('c-title').textContent=s.name+' ('+s.code+') — Candlestick';
+  document.getElementById('c-title').textContent=s.name+' ('+s.code+')';
   const last=candles[n-1],prev=n>1?candles[n-2].c:last.o;
   const chg=(last.c-prev)/prev*100;
   const ci=document.getElementById('c-info');
-  ci.textContent=`O ${last.o.toFixed(2)}  H ${last.h.toFixed(2)}  L ${last.l.toFixed(2)}  C ${last.c.toFixed(2)}  ${chg>=0?'+':''}${chg.toFixed(2)}%`;
+  ci.textContent=`O ${last.o.toFixed(2)} H ${last.h.toFixed(2)} L ${last.l.toFixed(2)} C ${last.c.toFixed(2)}  ${chg>=0?'+':''}${chg.toFixed(2)}%`;
   ci.style.color=chg>=0?'#1D9E75':'#D85A30';
 }
 
 function selectStock(code){
   selCode=code;
   const s=G.stocks.find(x=>x.code===code);
-  document.getElementById('tp-sel').innerHTML=`Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— ${s.name} (${s.code})</span>`;
+  document.getElementById('trade-label').innerHTML=`Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— ${s.name} (${s.code})</span>`;
   document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / share';
   const lq=G.longs[code]||0,sp=G.shorts[code];
   let h='';if(lq>0)h+='Long: '+lq+' shares  ';if(sp)h+='Short: '+sp.qty+' shares';
   document.getElementById('tp-held').textContent=h;
+  const r=G.sltp[code]||{};
+  document.getElementById('sl-price').value=r.sl||'';
+  document.getElementById('tp-price-input').value=r.tp||'';
+  document.getElementById('sl-hint').textContent='Current: $'+s.price.toFixed(2);
+  document.getElementById('sl-tp-box').style.display=mode==='long'?'block':'none';
   updateCost();setTimeout(()=>drawKline(code),50);renderMkt();
 }
 function updateCost(){
   if(!selCode)return;
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  document.getElementById('tp-cost').textContent=qty>0?(mode==='long'?'≈ '+fmt(s.price*qty):'Margin ≈ '+fmt(s.price*qty*0.5)):'';
+  document.getElementById('tp-cost').textContent=qty?(mode==='long'?'≈ ':'Margin ≈ ')+fmt(s.price*qty*(mode==='long'?1:0.5)):'';
 }
 document.getElementById('qty').oninput=updateCost;
 
@@ -372,72 +460,79 @@ function setMode(m){
   document.getElementById('mode-long').className='mode-btn'+(m==='long'?' ml':'');
   document.getElementById('mode-short').className='mode-btn'+(m==='short'?' ms':'');
   document.getElementById('short-tip').style.display=m==='short'?'block':'none';
+  document.getElementById('sl-tp-box').style.display=m==='long'?'block':'none';
   const tb=document.getElementById('trade-btns');
-  if(m==='long'){
-    tb.innerHTML='<button class="btn bb" id="btn-buy">Buy (Long)</button><button class="btn bs" id="btn-sell">Sell (Close Long)</button>';
-    document.getElementById('btn-buy').onclick=doBuy;document.getElementById('btn-sell').onclick=doSell;
-  }else{
-    tb.innerHTML='<button class="btn bs" id="btn-short">Sell Short (Open)</button><button class="btn bc" id="btn-cover">Buy to Cover (Close)</button>';
-    document.getElementById('btn-short').onclick=doShort;document.getElementById('btn-cover').onclick=doCover;
-  }
+  tb.innerHTML=m==='long'
+    ?'<button class="btn bb" onclick="doBuy()">Buy (Long)</button><button class="btn bs" onclick="doSell()">Sell (Close Long)</button>'
+    :'<button class="btn bs" onclick="doShort()">Sell Short (Open)</button><button class="btn bc" onclick="doCover()">Buy to Cover (Close)</button>';
   updateCost();
 }
 
-function record(action,code,qty,price,pnl){
-  G.tradeLog.push({day:G.day,action,code,qty,price:+price.toFixed(2),pnl:pnl!==null?+pnl.toFixed(2):null,newsTriggered:NEWS.some(n=>n.day===G.day)});
+function addLog(msg,type){G.rawLog.unshift({msg,type:type||''});renderLog();}
+function isNews(){return NEWS.some(n=>n.day===G.day);}
+function saveSLTP(code){
+  const sl=parseFloat(document.getElementById('sl-price').value)||null;
+  const tp=parseFloat(document.getElementById('tp-price-input').value)||null;
+  if(sl||tp)G.sltp[code]={sl,tp};else delete G.sltp[code];
 }
-function addLog(msg){G.rawLog.unshift(msg);renderLog();}
 
 function doBuy(){
-  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  if(!selCode){addLog('❌ Please select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  if(qty<=0){addLog('❌ Invalid quantity.');return;}
+  if(!qty){addLog('❌ Invalid quantity.','er');return;}
   const cost=s.price*qty;
-  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}, have ${fmt(G.cash)}.`);renderLog();return;}
+  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}, have ${fmt(G.cash)}.`,'er');renderLog();return;}
   G.cash-=cost;G.longs[selCode]=(G.longs[selCode]||0)+qty;
-  record('Buy',selCode,qty,s.price,null);
-  addLog(`✅ Day ${G.day} — Bought ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Cost: ${fmt(cost)}`);renderAll();
+  saveSLTP(selCode);
+  G.tradeLog.push({day:G.day,action:'buy',code:selCode,qty,price:s.price,news:isNews()});
+  const r=G.sltp[selCode];
+  addLog(`✅ Day ${G.day} — Bought ${s.name} ×${qty} @$${s.price.toFixed(2)}. Cost: ${fmt(cost)}${r&&r.sl?' SL:$'+r.sl:''}${r&&r.tp?' TP:$'+r.tp:''}`,'ok');
+  renderAll();
 }
 function doSell(){
-  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  if(!selCode){addLog('❌ Please select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  const held=G.longs[selCode]||0;
-  if(qty<=0||qty>held){addLog(`❌ Long position: ${held} shares. Cannot sell ${qty}.`);renderLog();return;}
-  G.cash+=s.price*qty;G.longs[selCode]-=qty;
-  if(!G.longs[selCode])delete G.longs[selCode];
-  record('Sell',selCode,qty,s.price,null);
-  addLog(`✅ Day ${G.day} — Sold ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Proceeds: ${fmt(s.price*qty)}`);renderAll();
+  const h=G.longs[selCode]||0;
+  if(!qty||qty>h){addLog(`❌ Long position: ${h} shares. Cannot sell ${qty}.`,'er');renderLog();return;}
+  const v=s.price*qty;G.cash+=v;G.longs[selCode]-=qty;
+  if(!G.longs[selCode]){delete G.longs[selCode];delete G.sltp[selCode];}
+  G.tradeLog.push({day:G.day,action:'sell',code:selCode,qty,price:s.price,news:isNews()});
+  addLog(`✅ Day ${G.day} — Sold ${s.name} ×${qty} @$${s.price.toFixed(2)}. Proceeds: ${fmt(v)}`,'ok');
+  renderAll();
 }
 function doShort(){
-  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  if(!selCode){addLog('❌ Please select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  if(qty<=0){addLog('❌ Invalid quantity.');return;}
-  const margin=s.price*qty*0.5;
-  if(margin>G.cash){addLog(`❌ Insufficient margin. Need ${fmt(margin)}, have ${fmt(G.cash)}.`);renderLog();return;}
-  if(G.shorts[selCode]){addLog('❌ Existing short position. Close it first.');renderLog();return;}
-  G.cash-=margin;G.cash+=s.price*qty;G.shorts[selCode]={qty,entryPrice:s.price,margin};
-  record('Short',selCode,qty,s.price,null);
-  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Margin: ${fmt(margin)}`);renderAll();
+  if(!qty){addLog('❌ Invalid quantity.','er');return;}
+  const m=s.price*qty*0.5;
+  if(m>G.cash){addLog(`❌ Insufficient margin. Need ${fmt(m)}, have ${fmt(G.cash)}.`,'er');renderLog();return;}
+  if(G.shorts[selCode]){addLog('❌ Existing short position. Close it first.','er');renderLog();return;}
+  G.cash-=m;G.cash+=s.price*qty;G.shorts[selCode]={qty,entryPrice:s.price,margin:m};
+  G.tradeLog.push({day:G.day,action:'short',code:selCode,qty,price:s.price,news:isNews()});
+  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @$${s.price.toFixed(2)}. Margin: ${fmt(m)}`,'ok');
+  renderAll();
 }
 function doCover(){
-  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  if(!selCode){addLog('❌ Please select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),pos=G.shorts[selCode];
-  if(!pos){addLog('❌ No short position to cover.');renderLog();return;}
+  if(!pos){addLog('❌ No short position to cover.','er');renderLog();return;}
   const qty=parseInt(document.getElementById('qty').value)||0;
-  if(qty<=0||qty>pos.qty){addLog(`❌ Short position: ${pos.qty} shares. Cannot cover ${qty}.`);renderLog();return;}
+  if(!qty||qty>pos.qty){addLog(`❌ Short position: ${pos.qty} shares. Cannot cover ${qty}.`,'er');renderLog();return;}
   const pnl=(pos.entryPrice-s.price)*qty,mr=pos.margin*(qty/pos.qty);
   G.cash-=s.price*qty;G.cash+=mr;
   if(qty===pos.qty)delete G.shorts[selCode];else{G.shorts[selCode].qty-=qty;G.shorts[selCode].margin-=mr;}
-  record('Cover',selCode,qty,s.price,pnl);
-  addLog(`${pnl>=0?'✅':'❌'} Day ${G.day} — Covered ${s.name} ×${qty} @ $${s.price.toFixed(2)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)}`);renderAll();
+  G.tradeLog.push({day:G.day,action:'cover',code:selCode,qty,price:s.price,pnl,news:isNews()});
+  addLog(`${pnl>=0?'✅':'❌'} Day ${G.day} — Covered ${s.name} ×${qty} @$${s.price.toFixed(2)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)}`,pnl>=0?'ok':'er');
+  renderAll();
 }
 
 function renderMkt(){
   const el=document.getElementById('mkt');el.innerHTML='';
   G.stocks.forEach(s=>{
     const prev=s.candles.length>1?s.candles[s.candles.length-2].c:s.base,chg=((s.price-prev)/prev)*100,up=chg>=0;
+    const hasPos=G.longs[s.code]||G.shorts[s.code],hasSL=G.sltp[s.code];
     const d=document.createElement('div');d.className='sk'+(selCode===s.code?' sel':'');
-    d.innerHTML=`<div class="sk-top"><div><div class="sk-nm">${s.name}</div><div class="sk-cd">${s.code} · ${s.sector}</div></div><div><div class="sk-pr">${s.price.toFixed(2)}</div><div class="sk-ch ${up?'up':'dn'}">${fmtPct(chg)}</div></div></div>`;
+    d.innerHTML=`<div class="sk-top"><div><div class="sk-nm">${s.name}${hasPos?'<span style="font-size:9px;background:var(--blue-bg);color:var(--blue-txt);border-radius:3px;padding:1px 4px;margin-left:3px">Pos</span>':''}${hasSL?'<span style="font-size:9px;background:#FAEEDA;color:#854F0B;border-radius:3px;padding:1px 4px;margin-left:2px">SL/TP</span>':''}</div><div class="sk-cd">${s.code} · ${s.sector}</div></div><div><div class="sk-pr">${s.price.toFixed(2)}</div><div class="sk-ch ${up?'up':'dn'}">${fmtPct(chg)}</div></div></div>`;
     d.onclick=()=>selectStock(s.code);el.appendChild(d);
   });
 }
@@ -452,49 +547,39 @@ function renderStats(){
 function renderHoldings(){
   const el=document.getElementById('hld-list'),rows=[];
   Object.entries(G.longs).forEach(([c,q])=>{
-    const s=G.stocks.find(x=>x.code===c);
-    rows.push(`<div class="hr"><span style="font-weight:500">${s.name}<span class="htag htl">Long</span></span><span style="color:var(--text2)">${q} × $${s.price.toFixed(2)}</span><span>${fmt(s.price*q)}</span></div>`);
+    const s=G.stocks.find(x=>x.code===c),r=G.sltp[c];
+    const sl=r&&r.sl?`<span style="font-size:10px;color:#D85A30;margin-left:4px">SL $${r.sl}</span>`:'';
+    const tp=r&&r.tp?`<span style="font-size:10px;color:#1D9E75;margin-left:4px">TP $${r.tp}</span>`:'';
+    rows.push(`<div class="hr"><span style="font-weight:500">${s.name}<span class="htag htl">Long</span>${sl}${tp}</span><span style="color:var(--text2)">${q} × $${s.price.toFixed(2)}</span><span>${fmt(s.price*q)}</span></div>`);
   });
   Object.entries(G.shorts).forEach(([c,pos])=>{
-    const s=G.stocks.find(x=>x.code===c);
-    const pnl=(pos.entryPrice-s.price)*pos.qty;
+    const s=G.stocks.find(x=>x.code===c),pnl=(pos.entryPrice-s.price)*pos.qty;
     rows.push(`<div class="hr"><span style="font-weight:500">${s.name}<span class="htag hts">Short</span></span><span style="color:var(--text2)">${pos.qty} @ $${pos.entryPrice.toFixed(2)}</span><span style="color:${pnl>=0?'var(--up)':'var(--dn)'};font-weight:500">${pnl>=0?'+':''}${fmt(pnl)}</span></div>`);
   });
   el.innerHTML=rows.length?rows.join(''):'<div class="empty">No open positions</div>';
 }
 function renderLog(){
-  document.getElementById('log-el').innerHTML=G.rawLog.slice(0,30).map(m=>{
-    const t=m.startsWith('✅')?'ok':m.startsWith('❌')?'er':'';
-    return`<div class="le ${t}">${m}</div>`;
-  }).join('');
+  document.getElementById('log-el').innerHTML=G.rawLog.slice(0,30).map(m=>`<div class="le ${m.type||''}">${m.msg||m}</div>`).join('');
 }
-function renderAll(){renderStats();renderMkt();renderHoldings();renderLog();if(selCode)setTimeout(()=>drawKline(selCode),50);}
+function renderAll(){renderStats();renderMkt();renderHoldings();renderLog();renderScores();if(selCode)setTimeout(()=>drawKline(selCode),50);}
 
-/* ── Report ── */
 function buildPrompt(){
   const lv=longVal(),sp=shortPnl(),sm=shortMargin(),total=G.cash+lv+sm+sp,pnl=total-G.init;
   const pct=((pnl/G.init)*100).toFixed(2);
   const freq={};G.tradeLog.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
   const fav=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
-  const perf=G.stocks.map(s=>{const b=STOCKS.find(x=>x.code===s.code).base;return`${s.name}: $${b}→$${s.price.toFixed(2)} (${((s.price-b)/b*100).toFixed(1)}%)`;}).join('; ');
-  const detail=G.tradeLog.map(t=>`Day${t.day}-${t.action}-${t.code}-${t.qty}shares@$${t.price}${t.pnl!==null?' P&L:$'+t.pnl.toFixed(0):''}${t.newsTriggered?' [news day]':''}`).join('\n')||'(no trades)';
-  const buys=G.tradeLog.filter(t=>t.action==='Buy').length;
-  const sells=G.tradeLog.filter(t=>t.action==='Sell').length;
-  const shorts=G.tradeLog.filter(t=>t.action==='Short').length;
-  const covers=G.tradeLog.filter(t=>t.action==='Cover').length;
-  const nt=G.tradeLog.filter(t=>t.newsTriggered).length;
-  return`You are a senior trading coach reviewing a finance intern's 20-day simulated trading session. Based on the data below, output ONLY a JSON object — no markdown, no extra text.
-
-Data:
-Starting capital: $100,000. Final assets: ${fmt(total)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)} (${pct}%)
-Trades: ${G.tradeLog.length} total — Buy:${buys} Sell:${sells} Short:${shorts} Cover:${covers}
-News-day trades: ${nt} out of 9 news events. Most traded: ${fav?fav[0]+' ('+fav[1]+'x)':'none'}
-20-day market performance: ${perf}
-Trade-by-trade log:
-${detail}
-
-Output this exact JSON structure:
-{"styleTag":"2-3 word trading style label","styleColor":"hex color e.g. #378ADD","styleBg":"light background hex e.g. #E6F1FB","styleSummary":"3-4 sentences describing their overall trading behavior and decision patterns","pros":["specific strength referencing actual data 1","strength 2","strength 3"],"cons":["specific area for improvement with data reference 1","improvement 2","improvement 3"],"suggestions":[{"title":"Learning focus 1","action":"Concrete actionable exercise"},{"title":"Learning focus 2","action":"Concrete actionable exercise"},{"title":"Learning focus 3","action":"Concrete actionable exercise"}],"closing":"One encouraging closing sentence with style label","tradeCount":"${G.tradeLog.length} trades","newsCount":"${nt} times","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%"}`;
+  const sc=calcScores();
+  const bc=G.tradeLog.filter(t=>t.action==='buy').length;
+  const sl2=G.tradeLog.filter(t=>t.action==='sell').length;
+  const sh=G.tradeLog.filter(t=>t.action==='short').length;
+  const co=G.tradeLog.filter(t=>t.action==='cover').length;
+  const nt=G.tradeLog.filter(t=>t.news).length;
+  const stk=new Set(G.tradeLog.map(t=>t.code)).size;
+  return`Trading coach debrief. Output ONLY JSON, no other text.
+Data: Start $100,000, Final ${fmt(total)}, P&L ${pnl>=0?'+':''}${fmt(pnl)}(${pct}%)
+Trades: ${G.tradeLog.length} (Buy:${bc}/Sell:${sl2}/Short:${sh}/Cover:${co}) SL:${G.slT} TP:${G.tpT}, news-day:${nt}/11, top:${fav?fav[0]+'x'+fav[1]:'none'}, stocks:${stk}
+Scores: Diversification:${sc.div} RiskControl:${sc.risk} Discipline:${sc.disc}
+Output: {"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#hex","styleSummary":"3 sentences describing style","pros":["specific strength with data 1","strength 2","strength 3"],"cons":["specific improvement 1","improvement 2","improvement 3"],"suggestions":[{"title":"focus 1","action":"exercise 1"},{"title":"focus 2","action":"exercise 2"},{"title":"focus 3","action":"exercise 3"}],"closing":"one encouraging sentence","scoreComment":"2 sentences on scores","tradeCount":"${G.tradeLog.length} trades","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%","divScore":${sc.div},"riskScore":${sc.risk},"discScore":${sc.disc}}`;
 }
 
 async function generateReport(){
@@ -505,47 +590,60 @@ async function generateReport(){
     const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
     const data=await resp.json();
     const text=data.choices?.[0]?.message?.content||'';
-    if(!text){
-      const errMsg=data.error?.message||JSON.stringify(data).slice(0,200);
-      throw new Error('Empty response from DeepSeek: '+errMsg);
-    }
-    const clean=text.replace(/```json[\s\S]*?```/g,m=>m.slice(7,-3)).replace(/```/g,'').trim();
-    const jsonMatch=clean.match(/\{[\s\S]*\}/);
-    if(!jsonMatch)throw new Error('No JSON found in response. Raw: '+clean.slice(0,200));
-    renderReport(JSON.parse(jsonMatch[0]));
+    if(!text)throw new Error('Empty: '+(data.error?.message||JSON.stringify(data).slice(0,150)));
+    const m=text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('No JSON found');
+    renderReport(JSON.parse(m[0]));
     document.getElementById('dl-btn').style.display='';
   }catch(e){
-    document.getElementById('report-content').innerHTML=`<div style="padding:20px;color:#D85A30;font-size:13px;line-height:1.7">Failed to generate report:<br><br><code style="background:#f5f5f3;padding:4px 8px;border-radius:4px;font-size:11px">${e.message}</code><br><br>Please check that DEEPSEEK_API_KEY is set in Vercel environment variables and redeploy.</div>`;
+    document.getElementById('report-content').innerHTML=`<div style="padding:20px;color:#D85A30;font-size:13px;line-height:1.8">Failed to generate report:<br><code style="background:#f5f5f3;padding:4px 8px;border-radius:4px;font-size:11px">${e.message}</code></div>`;
   }
 }
+
+function sBar(v){return`<div style="height:3px;border-radius:3px;background:${v>=80?'#1D9E75':v>=60?'#EF9F27':'#D85A30'};width:${v}%;margin-top:5px"></div>`;}
 
 function renderReport(r){
   const lv=longVal(),sp=shortPnl(),sm=shortMargin(),total=G.cash+lv+sm+sp,pnl=total-G.init;
   const freq={};G.tradeLog.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
   const fav=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
   const now=new Date();
-  const dateStr=`${now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
-  const tagColor=r.styleColor||'#378ADD';
-  const tagBg=r.styleBg||'#E6F1FB';
+  const dateStr=now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const pk=getPersonaKey(),pi=PINFO[pk];
+  const tc=r.styleColor||'#378ADD',tb=r.styleBg||'#E6F1FB';
   document.getElementById('report-content').innerHTML=`
   <div id="report-card">
     <div class="rc-hdr">
       <div class="rc-logo">📈</div>
+      <div><div class="rc-meta-title">Trading Simulation Report · Advanced</div><div class="rc-meta-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <div style="flex-shrink:0;background:${pi.bg};border-radius:12px;padding:8px">${PSVG[pk]}</div>
       <div>
-        <div class="rc-meta-title">Trading Simulation Report</div>
-        <div class="rc-meta-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div>
+        <div style="font-size:12px;font-weight:500;color:${pi.c};margin-bottom:4px">${pi.name} · ${pi.sub}</div>
+        <span class="rc-tag" style="background:${tb};color:${tc};border:1px solid ${tc}40">${r.styleTag}</span>
       </div>
     </div>
-    <div style="margin-bottom:14px">
-      <span class="rc-tag" style="background:${tagBg};color:${tagColor};border:1px solid ${tagColor}40">${r.styleTag}</span>
-    </div>
     <div class="rc-stats">
-      <div class="rc-stat"><div class="rc-stat-v">${r.finalAsset||fmt(total)}</div><div class="rc-stat-l">Final Assets</div></div>
-      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlStr||(pnl>=0?'+':'')+fmt(pnl)}</div><div class="rc-stat-l">Total P&L</div></div>
-      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlPct||((pnl>=0?'+':'')+((pnl/G.init)*100).toFixed(2)+'%')}</div><div class="rc-stat-l">Return</div></div>
-      <div class="rc-stat"><div class="rc-stat-v">${r.tradeCount||G.tradeLog.length+' trades'}</div><div class="rc-stat-l">Total Trades</div></div>
+      <div class="rc-stat"><div class="rc-stat-v">${r.finalAsset}</div><div class="rc-stat-l">Final Assets</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlStr}</div><div class="rc-stat-l">Total P&L</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlPct}</div><div class="rc-stat-l">Return</div></div>
+      <div class="rc-stat"><div class="rc-stat-v">${r.tradeCount}</div><div class="rc-stat-l">Total Trades</div></div>
     </div>
     <div class="rc-summary">${r.styleSummary}</div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">📊 Position Score Breakdown</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+        <div style="background:#f5f5f3;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:500;color:${r.divScore>=80?'#1D9E75':r.divScore>=60?'#BA7517':'#D85A30'}">${r.divScore}pts</div><div style="font-size:10px;color:#888;margin:3px 0">Diversification</div>${sBar(r.divScore)}</div>
+        <div style="background:#f5f5f3;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:500;color:${r.riskScore>=80?'#1D9E75':r.riskScore>=60?'#BA7517':'#D85A30'}">${r.riskScore}pts</div><div style="font-size:10px;color:#888;margin:3px 0">Risk Control</div>${sBar(r.riskScore)}</div>
+        <div style="background:#f5f5f3;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:500;color:${r.discScore>=80?'#1D9E75':r.discScore>=60?'#BA7517':'#D85A30'}">${r.discScore}pts</div><div style="font-size:10px;color:#888;margin:3px 0">Discipline</div>${sBar(r.discScore)}</div>
+      </div>
+      <div style="font-size:12px;line-height:1.8;color:#555;padding:10px 12px;background:#f5f5f3;border-radius:8px">
+        <div style="margin-bottom:5px">Diversification (${r.divScore}pts): Based on stocks held and concentration. Holding 3+ stocks with no single position above 40% scores highest.</div>
+        <div style="margin-bottom:5px">Risk Control (${r.riskScore}pts): Based on stop-loss rate across long positions and short margin ratio.</div>
+        <div style="margin-bottom:5px">Discipline (${r.discScore}pts): Based on trade frequency and stop-loss/take-profit execution. Fewer planned trades score highest.</div>
+        ${r.scoreComment?`<div style="margin-top:8px;padding-top:8px;border-top:0.5px solid #e5e5e5"><strong style="color:#1a1a1a">AI Comment: </strong>${r.scoreComment}</div>`:''}
+      </div>
+    </div>
     <div class="rc-grid">
       <div class="rc-box"><div class="rc-box-t">✅ Strengths</div><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
       <div class="rc-box"><div class="rc-box-t">⚠️ Areas to Improve</div><ul>${r.cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
@@ -556,24 +654,22 @@ function renderReport(r){
     </div>
     <div class="rc-closing">${r.closing}</div>
     <div class="rc-footer-line">
-      <span>Most traded: ${fav?fav[0]+' ('+fav[1]+'x)':'—'} · News-day trades: ${r.newsCount||'—'}</span>
+      <span>Most traded: ${fav?fav[0]+'(×'+fav[1]+')':'—'} · SL hits: ${G.slT} · TP hits: ${G.tpT}</span>
       <span>Powered by DeepSeek AI</span>
     </div>
+    <div class="rc-disclaimer">This report is AI-generated based on fictional simulation data. It does not constitute financial advice or a recommendation to buy or sell any security. All figures are simulated with no monetary value. Consult a licensed financial advisor before real investment decisions. Developed by Elena Zhang · For educational use only.</div>
   </div>`;
 }
 
 function closeModal(){document.getElementById('modal-bg').className='modal-bg';}
 
 async function downloadReport(){
-  const card=document.getElementById('report-card');
-  if(!card)return;
+  const card=document.getElementById('report-card');if(!card)return;
   const btn=document.getElementById('dl-btn');
   btn.textContent='Generating…';btn.disabled=true;
   try{
     const canvas=await html2canvas(card,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
-    const a=document.createElement('a');
-    a.href=canvas.toDataURL('image/png');
-    a.download='trading-style-report.png';a.click();
+    const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='trading-report.png';a.click();
   }catch(e){alert('Download failed: '+e.message);}
   btn.textContent='⬇ Download';btn.disabled=false;
 }
@@ -585,30 +681,31 @@ document.getElementById('next-btn').onclick=()=>{
   const news=NEWS.find(e=>e.day===G.day);
   const nb=document.getElementById('news-b');
   if(news){nb.textContent=news.msg;nb.className='news-b show';}else{nb.className='news-b';}
-  G.stocks.forEach(s=>{
+  G.stocks.forEach((s,i)=>{
     const prev=s.price;let eff=1;
     if(news)eff=news.stock===null?news.eff:(s.code===news.stock?news.eff:1+(Math.random()-0.5)*0.01);
-    const noise=1+(Math.random()-0.5)*s.vol*2;
+    const noise=1+(Math.random()-0.5)*STOCKS[i].vol*2;
     const np=Math.max(1,+(prev*eff*noise).toFixed(2));
     s.candles.push(genOHLC(prev,np));s.price=np;s.history.push(np);
   });
+  checkSLTP();
   if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
   renderAll();
 };
+
 document.getElementById('reset-btn').onclick=()=>{
   document.getElementById('news-b').className='news-b';
   document.getElementById('day-lbl').textContent='Day 1';
   document.getElementById('next-btn').textContent='Next Day →';
-  selCode=null;mode='long';
   document.getElementById('c-title').textContent='Click a stock card to view candlestick chart';
   document.getElementById('c-info').textContent='';
+  document.getElementById('trade-label').innerHTML='Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— select a stock first</span>';
   const c=document.getElementById('kline');c.getContext('2d').clearRect(0,0,c.width,c.height);
-  initG();setMode('long');renderAll();
+  selCode=null;mode='long';initG();setMode('long');renderAll();
 };
-document.getElementById('btn-buy').onclick=doBuy;
-document.getElementById('btn-sell').onclick=doSell;
+
 window.addEventListener('resize',()=>{if(selCode)setTimeout(()=>drawKline(selCode),50);});
-initG();renderAll();
+initG();setMode('long');renderAll();
 </script>
 </body>
 </html>
