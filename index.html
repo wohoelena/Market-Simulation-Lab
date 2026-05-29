@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Trading Simulator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#f5f5f3;--bg3:#ebebea;
+  --text:#1a1a1a;--text2:#6b6b6b;--text3:#aaa;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);
+  --up:#1D9E75;--dn:#D85A30;
+  --blue:#378ADD;--blue-bg:#E6F1FB;--blue-bd:#85B7EB;--blue-txt:#185FA5;
+  --r:8px;--rl:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#333;
+  --text:#e8e8e8;--text2:#999;--text3:#555;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+  --blue-bg:#0c2540;--blue-bd:#1e4a7a;--blue-txt:#7ab8f5;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;padding:20px;padding-bottom:60px}
+.page{max-width:760px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:20px;font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
+.sc{background:var(--bg2);border-radius:var(--r);padding:10px 12px}
+.sl{font-size:11px;color:var(--text2);margin-bottom:3px}
+.sv{font-size:16px;font-weight:500}
+.sv.up{color:var(--up)}.sv.dn{color:var(--dn)}
+.mkt{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:480px){.mkt{grid-template-columns:repeat(2,1fr)}}
+.sk{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:10px;cursor:pointer;transition:border-color .15s}
+.sk:hover{border-color:var(--border2)}.sk.sel{border:1.5px solid var(--blue)}
+.sk-top{display:flex;justify-content:space-between;align-items:flex-start}
+.sk-nm{font-size:12px;font-weight:500}.sk-cd{font-size:11px;color:var(--text3);margin-top:1px}
+.sk-pr{font-size:17px;font-weight:500;text-align:right}.sk-ch{font-size:11px;text-align:right;margin-top:1px}
+.sk-ch.up{color:var(--up)}.sk-ch.dn{color:var(--dn)}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:14px 16px;margin-bottom:14px}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.card-title{font-size:14px;font-weight:500}
+#c-info{font-size:12px}
+#kline-wrap{width:100%;height:180px}
+#kline{display:block}
+.mode-toggle{display:flex;gap:4px}
+.mode-btn{padding:4px 14px;font-size:12px;border-radius:6px;cursor:pointer;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:inherit}
+.mode-btn.ml{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}
+.mode-btn.ms{background:#FAECE7;color:#993C1D;border-color:#F0997B}
+.tr{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tl{font-size:12px;color:var(--text2);width:60px;flex-shrink:0}
+.ti{flex:1;min-width:70px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg2);color:var(--text);font-size:13px;font-family:inherit}
+.ti:focus{outline:none;border-color:var(--blue)}
+.tbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 20px;font-size:13px;border-radius:var(--r);cursor:pointer;border:0.5px solid;font-family:inherit}
+.bb{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}.bb:hover{background:#9FE1CB}
+.bs{background:#FAECE7;color:#993C1D;border-color:#F0997B}.bs:hover{background:#F5C4B3}
+.bc{background:var(--blue-bg);color:var(--blue-txt);border-color:var(--blue-bd)}.bc:hover{background:#B5D4F4}
+.bn{background:var(--bg2);color:var(--text);border-color:var(--border2);font-size:12px;padding:6px 14px}.bn:hover{background:var(--bg3)}
+.bx{background:var(--blue);color:#fff;border-color:var(--blue);font-size:13px;padding:8px 20px}.bx:hover{opacity:.9}
+.short-tip{font-size:11px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:8px 10px;margin-bottom:10px;line-height:1.6;display:none}
+.hr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px}
+.hr:last-child{border-bottom:none}
+.htag{font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px}
+.htl{background:#E1F5EE;color:#0F6E56}.hts{background:#FAECE7;color:#993C1D}
+.news-b{background:var(--blue-bg);border:0.5px solid var(--blue-bd);border-radius:var(--r);padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--blue-txt);display:none}
+.news-b.show{display:block}
+.day-b{font-size:12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:4px 10px;color:var(--text2)}
+.log{background:var(--bg2);border-radius:var(--r);padding:10px 12px;max-height:110px;overflow-y:auto}
+.le{font-size:11px;color:var(--text2);padding:1px 0;line-height:1.5}
+.le.ok{color:var(--up)}.le.er{color:var(--dn)}
+.loglbl{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.empty{font-size:12px;color:var(--text3)}
+.footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 8px;letter-spacing:.02em}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;overflow-y:auto;padding:20px}
+.modal-bg.show{display:block}
+.modal{background:var(--bg);border-radius:16px;max-width:680px;margin:0 auto;overflow:hidden}
+.modal-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:0.5px solid var(--border)}
+.modal-bar h2{font-size:16px;font-weight:500}
+.modal-btns{display:flex;gap:8px}
+.spinner{width:28px;height:28px;border:2px solid #ddd;border-top-color:#378ADD;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-wrap{padding:40px 20px;text-align:center;font-size:13px;color:#888}
+#report-card{padding:28px;background:#fff;color:#1a1a1a}
+.rc-hdr{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #e5e5e5}
+.rc-logo{width:42px;height:42px;border-radius:10px;background:#378ADD;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rc-meta-title{font-size:15px;font-weight:500;color:#1a1a1a}
+.rc-meta-sub{font-size:11px;color:#888;margin-top:2px}
+.rc-tag{display:inline-block;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:500;margin-bottom:14px}
+.rc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.rc-stat{background:#f5f5f3;border-radius:8px;padding:8px 10px;text-align:center}
+.rc-stat-v{font-size:15px;font-weight:500;color:#1a1a1a}
+.rc-stat-v.up{color:#1D9E75}.rc-stat-v.dn{color:#D85A30}
+.rc-stat-l{font-size:10px;color:#888;margin-top:2px}
+.rc-summary{font-size:13px;line-height:1.8;color:#1a1a1a;padding:12px 14px;background:#f5f5f3;border-radius:8px;margin-bottom:16px}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.rc-box{background:#f5f5f3;border-radius:12px;padding:12px 14px}
+.rc-box-t{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.rc-box ul{padding-left:15px}
+.rc-box li{font-size:12px;line-height:1.7;color:#1a1a1a;margin-bottom:3px}
+.rc-sugs{margin-bottom:14px}
+.rc-sug{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#f5f5f3;border-radius:8px;margin-bottom:8px}
+.rc-sug-n{width:20px;height:20px;border-radius:50%;background:#378ADD;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.rc-sug-t{font-size:12px;font-weight:500;color:#1a1a1a;margin-bottom:2px}
+.rc-sug-a{font-size:11px;color:#666;line-height:1.6}
+.rc-closing{text-align:center;padding:12px 14px;background:#E6F1FB;border-radius:10px;font-size:13px;color:#185FA5;line-height:1.7;margin-bottom:14px}
+.rc-footer-line{padding-top:12px;border-top:0.5px solid #e5e5e5;display:flex;justify-content:space-between}
+.rc-footer-line span{font-size:11px;color:#bbb}
+</style>
+</head>
+<body>
+<!-- Disclaimer Modal -->
+<div id="disclaimer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <div style="padding:24px 28px 0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span style="font-size:17px;font-weight:500;color:#1a1a1a">Important Disclaimer</span>
+      </div>
+      <div style="background:#E6F1FB;border:0.5px solid #85B7EB;border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:12px;color:#185FA5;line-height:1.6">
+        Please read carefully before proceeding.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:18px">
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Educational simulation only</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This is a fictional trading game for educational and training purposes only. All stocks, prices, and market events are entirely simulated and do not reflect any real securities or financial markets.</div></div>
+        </div>
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Not financial advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">Nothing in this simulator constitutes investment advice, a solicitation to buy or sell securities, or a recommendation of any financial product. Simulated performance does not predict real-world results.</div></div>
+        </div>
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">No real money involved</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">All currency values are virtual with no monetary value. No real funds are deposited, traded, or at risk at any time.</div></div>
+        </div>
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">Seek professional advice</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">For real investment decisions, always consult a licensed financial advisor. Trading real securities involves substantial risk of loss and may not be suitable for all individuals.</div></div>
+        </div>
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:6px;background:#f5f5f3;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px">No data collection</div><div style="font-size:12px;color:#6b6b6b;line-height:1.6">This simulator does not collect, store, or share any personal data. All activity exists only in your current browser session.</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px 28px 22px;border-top:0.5px solid rgba(0,0,0,0.09);margin-top:4px">
+      <div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:14px">
+        <input type="checkbox" id="disc-check" style="width:15px;height:15px;margin-top:1px;cursor:pointer;accent-color:#378ADD;flex-shrink:0">
+        <label for="disc-check" style="font-size:12px;color:#6b6b6b;cursor:pointer;line-height:1.5">I have read and understood the disclaimer above. I agree to use this simulator for educational purposes only and acknowledge that no real financial transactions are involved.</label>
+      </div>
+      <button id="disc-btn" onclick="enterSim()" style="width:100%;padding:10px;font-size:14px;font-weight:500;border-radius:8px;cursor:pointer;border:0.5px solid #aaa;background:#f5f5f3;color:#aaa;font-family:inherit;transition:all .15s" disabled>
+        I Agree — Start Simulation
+      </button>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:#bbb">
+        &copy; 2025 Stock Trading Simulator &middot; Developed by Elena Zhang &middot; For educational use only
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('disc-check').addEventListener('change',function(){
+    var btn=document.getElementById('disc-btn');
+    if(this.checked){btn.style.background='#378ADD';btn.style.borderColor='#378ADD';btn.style.color='#fff';btn.disabled=false;}
+    else{btn.style.background='#f5f5f3';btn.style.borderColor='#aaa';btn.style.color='#aaa';btn.disabled=true;}
+  });
+  function enterSim(){
+    var el=document.getElementById('disclaimer-overlay');
+    el.style.opacity='0';el.style.transition='opacity .25s';
+    setTimeout(function(){el.style.display='none';},250);
+  }
+</script>
+
+
+<div class="page">
+  <div class="hdr">
+    <h1>📈 Stock Trading Simulator</h1>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span class="day-b" id="day-lbl">Day 1</span>
+      <button class="btn bx" id="next-btn">Next Day →</button>
+      <button class="btn bn" id="reset-btn">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="news-b" id="news-b"></div>
+
+  <div class="stats">
+    <div class="sc"><div class="sl">💰 Cash</div><div class="sv" id="s-cash">$100,000</div></div>
+    <div class="sc"><div class="sl">📊 Long Value</div><div class="sv" id="s-long">$0</div></div>
+    <div class="sc"><div class="sl">📉 Short P&L</div><div class="sv" id="s-short">$0</div></div>
+    <div class="sc"><div class="sl">💼 Total Assets</div><div class="sv" id="s-total">$100,000</div></div>
+    <div class="sc"><div class="sl">📈 Total P&L</div><div class="sv" id="s-pnl">$0</div></div>
+  </div>
+
+  <div class="mkt" id="mkt"></div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title" id="c-title">Click a stock card to view candlestick chart</span>
+      <span id="c-info"></span>
+    </div>
+    <div id="kline-wrap"><canvas id="kline"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title" id="tp-sel">Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— select a stock first</span></span>
+      <div class="mode-toggle">
+        <button class="mode-btn ml" id="mode-long" onclick="setMode('long')">Long</button>
+        <button class="mode-btn" id="mode-short" onclick="setMode('short')">Short</button>
+      </div>
+    </div>
+    <div id="short-tip" class="short-tip"><strong>Short selling:</strong> Borrow shares and sell them, then buy back at a lower price to profit. Margin required = price × qty × 50%. You lose if the price rises.</div>
+    <div class="tr">
+      <span class="tl">Price</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text)" id="tp-price">—</span>
+      <span style="font-size:11px;color:var(--text2)" id="tp-held"></span>
+    </div>
+    <div class="tr">
+      <span class="tl">Qty (shares)</span>
+      <input type="number" id="qty" class="ti" min="1" value="100" step="100">
+      <span style="font-size:11px;color:var(--text2)" id="tp-cost"></span>
+    </div>
+    <div class="tbtns" id="trade-btns">
+      <button class="btn bb" id="btn-buy">Buy (Long)</button>
+      <button class="btn bs" id="btn-sell">Sell (Close Long)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:10px">Positions</div>
+    <div id="hld-list"><div class="empty">No open positions</div></div>
+  </div>
+
+  <div class="loglbl">Trade Log</div>
+  <div class="log" id="log-el"></div>
+
+  <div class="footer" style="text-align:center;padding:24px 0 8px">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Developed by Elena Zhang</div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.7;max-width:600px;margin:0 auto;padding:0 12px">
+      <strong>Disclaimer:</strong> This simulator is for educational and training purposes only. All stocks, prices, and market events are entirely fictional. Nothing herein constitutes financial advice or a recommendation to buy or sell any security. No real funds are involved. Past simulated performance does not predict future results. Always consult a licensed financial advisor before making real investment decisions.
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-bar">
+      <h2>📊 Trading Style Report</h2>
+      <div class="modal-btns">
+        <button class="btn bn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Download</button>
+        <button class="btn bn" onclick="closeModal()">✕ Close</button>
+      </div>
+    </div>
+    <div id="report-content"></div>
+  </div>
+</div>
+
+<script>
+const STOCKS=[
+  {code:'TECH',name:'Tech Giant',base:120,vol:0.04,sector:'Technology'},
+  {code:'BANK',name:'Big Bank',base:45,vol:0.02,sector:'Financials'},
+  {code:'ENRG',name:'Clean Energy',base:88,vol:0.06,sector:'Energy'},
+  {code:'CONS',name:'Consumer Blue Chip',base:210,vol:0.03,sector:'Consumer'},
+];
+const NEWS=[
+  {day:3,stock:'TECH',eff:1.12,msg:'📰 Tech Giant beats earnings — net profit up 35% YoY!'},
+  {day:5,stock:'ENRG',eff:0.85,msg:'📰 Oil prices plunge — clean energy stocks under pressure.'},
+  {day:7,stock:null,eff:0.94,msg:'📰 Fed surprise rate hike — broad market selloff.'},
+  {day:9,stock:'BANK',eff:1.08,msg:'📰 Central bank cuts reserve ratio — bank stocks rally!'},
+  {day:12,stock:'CONS',eff:1.15,msg:'📰 Consumer spending data beats estimates — blue chips surge!'},
+  {day:14,stock:null,eff:1.05,msg:'📰 Major stimulus package announced — markets rally across the board!'},
+  {day:16,stock:'TECH',eff:0.88,msg:'📰 Regulators call in tech executives — sector drops sharply.'},
+  {day:18,stock:null,eff:0.92,msg:'📰 Foreign capital outflows spike — panic selling across markets.'},
+  {day:20,stock:'ENRG',eff:1.2,msg:'📰 Clean energy subsidies exceed expectations — sector hits limit-up!'},
+];
+
+let G={},mode='long',selCode=null;
+
+function initG(){
+  G={day:1,cash:100000,init:100000,
+    stocks:STOCKS.map(s=>({...s,price:s.base,candles:[genOHLC(s.base,s.base)],history:[s.base]})),
+    longs:{},shorts:{},tradeLog:[],rawLog:['Game started! Initial capital: $100,000.']};
+}
+function genOHLC(o,c){
+  const h=+(Math.max(o,c)*(1+Math.random()*0.012)).toFixed(2);
+  const l=+(Math.min(o,c)*(1-Math.random()*0.012)).toFixed(2);
+  return{o:+o.toFixed(2),h,l,c:+c.toFixed(2)};
+}
+function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%'}
+function longVal(){return Object.entries(G.longs).reduce((s,[c,q])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?st.price*q:0);},0)}
+function shortPnl(){return Object.entries(G.shorts).reduce((s,[c,p])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?(p.entryPrice-st.price)*p.qty:0);},0)}
+function shortMargin(){return Object.entries(G.shorts).reduce((s,[c,p])=>{const st=G.stocks.find(x=>x.code===c);return s+(st?st.price*p.qty*0.5:0);},0)}
+
+function drawKline(code){
+  const s=G.stocks.find(x=>x.code===code);
+  const wrap=document.getElementById('kline-wrap');
+  const canv=document.getElementById('kline');
+  const W=wrap.clientWidth,H=180;
+  canv.width=W;canv.height=H;
+  const ctx=canv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const candles=s.candles,n=candles.length;
+  if(!n)return;
+  const allH=candles.map(c=>c.h),allL=candles.map(c=>c.l);
+  const maxP=Math.max(...allH),minP=Math.min(...allL);
+  const range=maxP-minP||maxP*0.02||1;
+  const padT=16,padB=24,padL=52,padR=14;
+  const chartW=W-padL-padR,chartH=H-padT-padB;
+  const slotW=chartW/n,bodyW=Math.max(3,Math.min(slotW*0.6,20));
+  const toY=p=>padT+chartH*(1-(p-minP)/range);
+  const toX=i=>padL+slotW*i+slotW/2;
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridCol=isDark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
+  const lblCol=isDark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.38)';
+  ctx.font='11px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';
+  [0,0.25,0.5,0.75,1].forEach(r=>{
+    const y=padT+r*chartH;
+    ctx.strokeStyle=gridCol;ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
+    ctx.fillStyle=lblCol;ctx.fillText('$'+(maxP-r*range).toFixed(1),padL-6,y);
+  });
+  candles.forEach((c,i)=>{
+    const x=toX(i),isUp=c.c>=c.o,col=isUp?'#1D9E75':'#D85A30';
+    ctx.strokeStyle=col;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x,toY(c.h));ctx.lineTo(x,toY(c.l));ctx.stroke();
+    const top=toY(Math.max(c.o,c.c)),bot=toY(Math.min(c.o,c.c));
+    ctx.fillStyle=col;ctx.fillRect(x-bodyW/2,top,bodyW,Math.max(2,bot-top));
+  });
+  ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=lblCol;
+  const step=Math.max(1,Math.ceil(n/6));
+  candles.forEach((_,i)=>{if(i%step===0||i===n-1)ctx.fillText('D'+(i+1),toX(i),H-6);});
+  document.getElementById('c-title').textContent=s.name+' ('+s.code+') — Candlestick';
+  const last=candles[n-1],prev=n>1?candles[n-2].c:last.o;
+  const chg=(last.c-prev)/prev*100;
+  const ci=document.getElementById('c-info');
+  ci.textContent=`O ${last.o.toFixed(2)}  H ${last.h.toFixed(2)}  L ${last.l.toFixed(2)}  C ${last.c.toFixed(2)}  ${chg>=0?'+':''}${chg.toFixed(2)}%`;
+  ci.style.color=chg>=0?'#1D9E75':'#D85A30';
+}
+
+function selectStock(code){
+  selCode=code;
+  const s=G.stocks.find(x=>x.code===code);
+  document.getElementById('tp-sel').innerHTML=`Trade <span style="font-size:12px;font-weight:400;color:var(--text2)">— ${s.name} (${s.code})</span>`;
+  document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / share';
+  const lq=G.longs[code]||0,sp=G.shorts[code];
+  let h='';if(lq>0)h+='Long: '+lq+' shares  ';if(sp)h+='Short: '+sp.qty+' shares';
+  document.getElementById('tp-held').textContent=h;
+  updateCost();setTimeout(()=>drawKline(code),50);renderMkt();
+}
+function updateCost(){
+  if(!selCode)return;
+  const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
+  document.getElementById('tp-cost').textContent=qty>0?(mode==='long'?'≈ '+fmt(s.price*qty):'Margin ≈ '+fmt(s.price*qty*0.5)):'';
+}
+document.getElementById('qty').oninput=updateCost;
+
+function setMode(m){
+  mode=m;
+  document.getElementById('mode-long').className='mode-btn'+(m==='long'?' ml':'');
+  document.getElementById('mode-short').className='mode-btn'+(m==='short'?' ms':'');
+  document.getElementById('short-tip').style.display=m==='short'?'block':'none';
+  const tb=document.getElementById('trade-btns');
+  if(m==='long'){
+    tb.innerHTML='<button class="btn bb" id="btn-buy">Buy (Long)</button><button class="btn bs" id="btn-sell">Sell (Close Long)</button>';
+    document.getElementById('btn-buy').onclick=doBuy;document.getElementById('btn-sell').onclick=doSell;
+  }else{
+    tb.innerHTML='<button class="btn bs" id="btn-short">Sell Short (Open)</button><button class="btn bc" id="btn-cover">Buy to Cover (Close)</button>';
+    document.getElementById('btn-short').onclick=doShort;document.getElementById('btn-cover').onclick=doCover;
+  }
+  updateCost();
+}
+
+function record(action,code,qty,price,pnl){
+  G.tradeLog.push({day:G.day,action,code,qty,price:+price.toFixed(2),pnl:pnl!==null?+pnl.toFixed(2):null,newsTriggered:NEWS.some(n=>n.day===G.day)});
+}
+function addLog(msg){G.rawLog.unshift(msg);renderLog();}
+
+function doBuy(){
+  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
+  if(qty<=0){addLog('❌ Invalid quantity.');return;}
+  const cost=s.price*qty;
+  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}, have ${fmt(G.cash)}.`);renderLog();return;}
+  G.cash-=cost;G.longs[selCode]=(G.longs[selCode]||0)+qty;
+  record('Buy',selCode,qty,s.price,null);
+  addLog(`✅ Day ${G.day} — Bought ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Cost: ${fmt(cost)}`);renderAll();
+}
+function doSell(){
+  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
+  const held=G.longs[selCode]||0;
+  if(qty<=0||qty>held){addLog(`❌ Long position: ${held} shares. Cannot sell ${qty}.`);renderLog();return;}
+  G.cash+=s.price*qty;G.longs[selCode]-=qty;
+  if(!G.longs[selCode])delete G.longs[selCode];
+  record('Sell',selCode,qty,s.price,null);
+  addLog(`✅ Day ${G.day} — Sold ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Proceeds: ${fmt(s.price*qty)}`);renderAll();
+}
+function doShort(){
+  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
+  if(qty<=0){addLog('❌ Invalid quantity.');return;}
+  const margin=s.price*qty*0.5;
+  if(margin>G.cash){addLog(`❌ Insufficient margin. Need ${fmt(margin)}, have ${fmt(G.cash)}.`);renderLog();return;}
+  if(G.shorts[selCode]){addLog('❌ Existing short position. Close it first.');renderLog();return;}
+  G.cash-=margin;G.cash+=s.price*qty;G.shorts[selCode]={qty,entryPrice:s.price,margin};
+  record('Short',selCode,qty,s.price,null);
+  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @ $${s.price.toFixed(2)}. Margin: ${fmt(margin)}`);renderAll();
+}
+function doCover(){
+  if(!selCode){addLog('❌ Please select a stock first.');return;}
+  const s=G.stocks.find(x=>x.code===selCode),pos=G.shorts[selCode];
+  if(!pos){addLog('❌ No short position to cover.');renderLog();return;}
+  const qty=parseInt(document.getElementById('qty').value)||0;
+  if(qty<=0||qty>pos.qty){addLog(`❌ Short position: ${pos.qty} shares. Cannot cover ${qty}.`);renderLog();return;}
+  const pnl=(pos.entryPrice-s.price)*qty,mr=pos.margin*(qty/pos.qty);
+  G.cash-=s.price*qty;G.cash+=mr;
+  if(qty===pos.qty)delete G.shorts[selCode];else{G.shorts[selCode].qty-=qty;G.shorts[selCode].margin-=mr;}
+  record('Cover',selCode,qty,s.price,pnl);
+  addLog(`${pnl>=0?'✅':'❌'} Day ${G.day} — Covered ${s.name} ×${qty} @ $${s.price.toFixed(2)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)}`);renderAll();
+}
+
+function renderMkt(){
+  const el=document.getElementById('mkt');el.innerHTML='';
+  G.stocks.forEach(s=>{
+    const prev=s.candles.length>1?s.candles[s.candles.length-2].c:s.base,chg=((s.price-prev)/prev)*100,up=chg>=0;
+    const d=document.createElement('div');d.className='sk'+(selCode===s.code?' sel':'');
+    d.innerHTML=`<div class="sk-top"><div><div class="sk-nm">${s.name}</div><div class="sk-cd">${s.code} · ${s.sector}</div></div><div><div class="sk-pr">${s.price.toFixed(2)}</div><div class="sk-ch ${up?'up':'dn'}">${fmtPct(chg)}</div></div></div>`;
+    d.onclick=()=>selectStock(s.code);el.appendChild(d);
+  });
+}
+function renderStats(){
+  const lv=longVal(),sp=shortPnl(),sm=shortMargin(),total=G.cash+lv+sm+sp,pnl=total-G.init;
+  document.getElementById('s-cash').textContent=fmt(G.cash);
+  document.getElementById('s-long').textContent=fmt(lv);
+  const se=document.getElementById('s-short');se.textContent=(sp>=0?'+':'')+fmt(sp);se.className='sv'+(sp>0?' up':sp<0?' dn':'');
+  document.getElementById('s-total').textContent=fmt(total);
+  const pe=document.getElementById('s-pnl');pe.textContent=(pnl>=0?'+':'')+fmt(pnl);pe.className='sv'+(pnl>0?' up':pnl<0?' dn':'');
+}
+function renderHoldings(){
+  const el=document.getElementById('hld-list'),rows=[];
+  Object.entries(G.longs).forEach(([c,q])=>{
+    const s=G.stocks.find(x=>x.code===c);
+    rows.push(`<div class="hr"><span style="font-weight:500">${s.name}<span class="htag htl">Long</span></span><span style="color:var(--text2)">${q} × $${s.price.toFixed(2)}</span><span>${fmt(s.price*q)}</span></div>`);
+  });
+  Object.entries(G.shorts).forEach(([c,pos])=>{
+    const s=G.stocks.find(x=>x.code===c);
+    const pnl=(pos.entryPrice-s.price)*pos.qty;
+    rows.push(`<div class="hr"><span style="font-weight:500">${s.name}<span class="htag hts">Short</span></span><span style="color:var(--text2)">${pos.qty} @ $${pos.entryPrice.toFixed(2)}</span><span style="color:${pnl>=0?'var(--up)':'var(--dn)'};font-weight:500">${pnl>=0?'+':''}${fmt(pnl)}</span></div>`);
+  });
+  el.innerHTML=rows.length?rows.join(''):'<div class="empty">No open positions</div>';
+}
+function renderLog(){
+  document.getElementById('log-el').innerHTML=G.rawLog.slice(0,30).map(m=>{
+    const t=m.startsWith('✅')?'ok':m.startsWith('❌')?'er':'';
+    return`<div class="le ${t}">${m}</div>`;
+  }).join('');
+}
+function renderAll(){renderStats();renderMkt();renderHoldings();renderLog();if(selCode)setTimeout(()=>drawKline(selCode),50);}
+
+/* ── Report ── */
+function buildPrompt(){
+  const lv=longVal(),sp=shortPnl(),sm=shortMargin(),total=G.cash+lv+sm+sp,pnl=total-G.init;
+  const pct=((pnl/G.init)*100).toFixed(2);
+  const freq={};G.tradeLog.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
+  const fav=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
+  const perf=G.stocks.map(s=>{const b=STOCKS.find(x=>x.code===s.code).base;return`${s.name}: $${b}→$${s.price.toFixed(2)} (${((s.price-b)/b*100).toFixed(1)}%)`;}).join('; ');
+  const detail=G.tradeLog.map(t=>`Day${t.day}-${t.action}-${t.code}-${t.qty}shares@$${t.price}${t.pnl!==null?' P&L:$'+t.pnl.toFixed(0):''}${t.newsTriggered?' [news day]':''}`).join('\n')||'(no trades)';
+  const buys=G.tradeLog.filter(t=>t.action==='Buy').length;
+  const sells=G.tradeLog.filter(t=>t.action==='Sell').length;
+  const shorts=G.tradeLog.filter(t=>t.action==='Short').length;
+  const covers=G.tradeLog.filter(t=>t.action==='Cover').length;
+  const nt=G.tradeLog.filter(t=>t.newsTriggered).length;
+  return`You are a senior trading coach reviewing a finance intern's 20-day simulated trading session. Based on the data below, output ONLY a JSON object — no markdown, no extra text.
+
+Data:
+Starting capital: $100,000. Final assets: ${fmt(total)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)} (${pct}%)
+Trades: ${G.tradeLog.length} total — Buy:${buys} Sell:${sells} Short:${shorts} Cover:${covers}
+News-day trades: ${nt} out of 9 news events. Most traded: ${fav?fav[0]+' ('+fav[1]+'x)':'none'}
+20-day market performance: ${perf}
+Trade-by-trade log:
+${detail}
+
+Output this exact JSON structure:
+{"styleTag":"2-3 word trading style label","styleColor":"hex color e.g. #378ADD","styleBg":"light background hex e.g. #E6F1FB","styleSummary":"3-4 sentences describing their overall trading behavior and decision patterns","pros":["specific strength referencing actual data 1","strength 2","strength 3"],"cons":["specific area for improvement with data reference 1","improvement 2","improvement 3"],"suggestions":[{"title":"Learning focus 1","action":"Concrete actionable exercise"},{"title":"Learning focus 2","action":"Concrete actionable exercise"},{"title":"Learning focus 3","action":"Concrete actionable exercise"}],"closing":"One encouraging closing sentence with style label","tradeCount":"${G.tradeLog.length} trades","newsCount":"${nt} times","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%"}`;
+}
+
+async function generateReport(){
+  document.getElementById('modal-bg').className='modal-bg show';
+  document.getElementById('dl-btn').style.display='none';
+  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is analyzing your trading style…</div>';
+  try{
+    const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
+    const data=await resp.json();
+    const text=data.choices?.[0]?.message?.content||'';
+    if(!text){
+      const errMsg=data.error?.message||JSON.stringify(data).slice(0,200);
+      throw new Error('Empty response from DeepSeek: '+errMsg);
+    }
+    const clean=text.replace(/```json[\s\S]*?```/g,m=>m.slice(7,-3)).replace(/```/g,'').trim();
+    const jsonMatch=clean.match(/\{[\s\S]*\}/);
+    if(!jsonMatch)throw new Error('No JSON found in response. Raw: '+clean.slice(0,200));
+    renderReport(JSON.parse(jsonMatch[0]));
+    document.getElementById('dl-btn').style.display='';
+  }catch(e){
+    document.getElementById('report-content').innerHTML=`<div style="padding:20px;color:#D85A30;font-size:13px;line-height:1.7">Failed to generate report:<br><br><code style="background:#f5f5f3;padding:4px 8px;border-radius:4px;font-size:11px">${e.message}</code><br><br>Please check that DEEPSEEK_API_KEY is set in Vercel environment variables and redeploy.</div>`;
+  }
+}
+
+function renderReport(r){
+  const lv=longVal(),sp=shortPnl(),sm=shortMargin(),total=G.cash+lv+sm+sp,pnl=total-G.init;
+  const freq={};G.tradeLog.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
+  const fav=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
+  const now=new Date();
+  const dateStr=`${now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+  const tagColor=r.styleColor||'#378ADD';
+  const tagBg=r.styleBg||'#E6F1FB';
+  document.getElementById('report-content').innerHTML=`
+  <div id="report-card">
+    <div class="rc-hdr">
+      <div class="rc-logo">📈</div>
+      <div>
+        <div class="rc-meta-title">Trading Simulation Report</div>
+        <div class="rc-meta-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <span class="rc-tag" style="background:${tagBg};color:${tagColor};border:1px solid ${tagColor}40">${r.styleTag}</span>
+    </div>
+    <div class="rc-stats">
+      <div class="rc-stat"><div class="rc-stat-v">${r.finalAsset||fmt(total)}</div><div class="rc-stat-l">Final Assets</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlStr||(pnl>=0?'+':'')+fmt(pnl)}</div><div class="rc-stat-l">Total P&L</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlPct||((pnl>=0?'+':'')+((pnl/G.init)*100).toFixed(2)+'%')}</div><div class="rc-stat-l">Return</div></div>
+      <div class="rc-stat"><div class="rc-stat-v">${r.tradeCount||G.tradeLog.length+' trades'}</div><div class="rc-stat-l">Total Trades</div></div>
+    </div>
+    <div class="rc-summary">${r.styleSummary}</div>
+    <div class="rc-grid">
+      <div class="rc-box"><div class="rc-box-t">✅ Strengths</div><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+      <div class="rc-box"><div class="rc-box-t">⚠️ Areas to Improve</div><ul>${r.cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
+    </div>
+    <div class="rc-sugs">
+      <div style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📚 Personalized Learning Plan</div>
+      ${r.suggestions.map((s,i)=>`<div class="rc-sug"><div class="rc-sug-n">${i+1}</div><div><div class="rc-sug-t">${s.title}</div><div class="rc-sug-a">${s.action}</div></div></div>`).join('')}
+    </div>
+    <div class="rc-closing">${r.closing}</div>
+    <div class="rc-footer-line">
+      <span>Most traded: ${fav?fav[0]+' ('+fav[1]+'x)':'—'} · News-day trades: ${r.newsCount||'—'}</span>
+      <span>Powered by DeepSeek AI</span>
+    </div>
+  </div>`;
+}
+
+function closeModal(){document.getElementById('modal-bg').className='modal-bg';}
+
+async function downloadReport(){
+  const card=document.getElementById('report-card');
+  if(!card)return;
+  const btn=document.getElementById('dl-btn');
+  btn.textContent='Generating…';btn.disabled=true;
+  try{
+    const canvas=await html2canvas(card,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download='trading-style-report.png';a.click();
+  }catch(e){alert('Download failed: '+e.message);}
+  btn.textContent='⬇ Download';btn.disabled=false;
+}
+
+document.getElementById('next-btn').onclick=()=>{
+  if(G.day>=20){generateReport();return;}
+  G.day++;
+  document.getElementById('day-lbl').textContent='Day '+G.day;
+  const news=NEWS.find(e=>e.day===G.day);
+  const nb=document.getElementById('news-b');
+  if(news){nb.textContent=news.msg;nb.className='news-b show';}else{nb.className='news-b';}
+  G.stocks.forEach(s=>{
+    const prev=s.price;let eff=1;
+    if(news)eff=news.stock===null?news.eff:(s.code===news.stock?news.eff:1+(Math.random()-0.5)*0.01);
+    const noise=1+(Math.random()-0.5)*s.vol*2;
+    const np=Math.max(1,+(prev*eff*noise).toFixed(2));
+    s.candles.push(genOHLC(prev,np));s.price=np;s.history.push(np);
+  });
+  if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
+  renderAll();
+};
+document.getElementById('reset-btn').onclick=()=>{
+  document.getElementById('news-b').className='news-b';
+  document.getElementById('day-lbl').textContent='Day 1';
+  document.getElementById('next-btn').textContent='Next Day →';
+  selCode=null;mode='long';
+  document.getElementById('c-title').textContent='Click a stock card to view candlestick chart';
+  document.getElementById('c-info').textContent='';
+  const c=document.getElementById('kline');c.getContext('2d').clearRect(0,0,c.width,c.height);
+  initG();setMode('long');renderAll();
+};
+document.getElementById('btn-buy').onclick=doBuy;
+document.getElementById('btn-sell').onclick=doSell;
+window.addEventListener('resize',()=>{if(selCode)setTimeout(()=>drawKline(selCode),50);});
+initG();renderAll();
+</script>
+</body>
+</html>
