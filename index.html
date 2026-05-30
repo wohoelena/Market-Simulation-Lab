@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Market Lab · Trading Simulator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -182,7 +182,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .rc-footer span{font-size:10px;color:var(--tv-text2)}
 .rc-disc{margin-top:8px;padding:6px 10px;background:var(--tv-bg3);border-radius:4px;font-size:9px;color:var(--tv-text2);line-height:1.5;text-align:center}
 
-.footer-bar{border-top:0.5px solid var(--tv-border);padding:5px 14px;font-size:10px;color:var(--tv-text2);display:flex;justify-content:space-between;flex-shrink:0}
+.footer-bar{border-top:0.5px solid var(--tv-border);padding:8px 16px;font-size:10px;color:var(--tv-text2);display:flex;flex-direction:column;align-items:center;flex-shrink:0}
 /* ── Mobile: full reflow ── */
 
 
@@ -413,15 +413,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <!-- Positions -->
       <div class="trade-sec" style="flex:1">
         <div class="trade-sec-title">Open Positions</div>
-        <div id="hld-list"><div style="font-size:10px;color:var(--tv-text2)">暂无持仓</div></div>
+        <div id="hld-list"><div style="font-size:10px;color:var(--tv-text2)">No open positions</div></div>
       </div>
 
     </div>
   </div>
 
-  <div class="footer-bar">
-    <span>Developed by Elena Zhang &middot; &copy; 2026 Market Lab</span>
-    <span>For educational use only — not financial advice — no real funds involved</span>
+  <div class="footer-bar" style="height:auto;padding:10px 16px;flex-direction:column;gap:3px;text-align:center">
+    <div style="font-size:10px;font-weight:500">Developed by Elena Zhang &middot; &copy; 2026 Market Lab</div>
+    <div style="font-size:9px;color:var(--tv-text2);line-height:1.5;max-width:720px;margin:0 auto"><strong>Disclaimer:</strong> This simulator is for educational and training purposes only. All stocks, prices, news events, and market movements are entirely fictional and do not represent any real securities or financial markets. Nothing herein constitutes investment advice or a recommendation of any financial product. No real funds are involved. Simulated results do not predict real-world performance. Always consult a licensed financial advisor before making real investment decisions.</div>
   </div>
 
 </div>
@@ -463,25 +463,59 @@ const NEWS=[
   {day:20,stock:'ENRG',eff:1.18,msg:'📰 EV sales beat forecasts — clean energy limit-up!'},
 ];
 const PSVG={
-  guardian:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a3a2a" stroke="#26a69a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#26a69a"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#26a69a"/><path d="M33 44 L40 42 L47 44 L47 52 Q40 56 33 52 Z" fill="#1a3a2a" stroke="#1D9E75" stroke-width="1"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#26a69a"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#26a69a"/></svg>`,
-  bull:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a1a" stroke="#ef5350" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#ef5350"/><path d="M30 16 Q24 8 20 12" stroke="#ef5350" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M50 16 Q56 8 60 12" stroke="#ef5350" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#ef5350"/><path d="M40 57 L40 44 M36 48 L40 44 L44 48" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#ef5350"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#ef5350"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#ef5350" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#ef5350" transform="rotate(20,58,41)"/></svg>`,
-  bear:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e1a3a" stroke="#7b6fd4" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#534AB7"/><circle cx="29" cy="13" r="5" fill="#534AB7"/><circle cx="51" cy="13" r="5" fill="#534AB7"/><circle cx="29" cy="13" r="3" fill="#1e1a3a"/><circle cx="51" cy="13" r="3" fill="#1e1a3a"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#534AB7"/><path d="M40 44 L40 57 M36 53 L40 57 L44 53" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#534AB7"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#534AB7"/></svg>`,
-  hunter:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2a1f00" stroke="#f59f00" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#BA7517"/><rect x="44" y="18" width="14" height="5" rx="2" fill="#BA7517" stroke="#633806" stroke-width="1"/><rect x="22" y="19" width="10" height="4" rx="2" fill="#BA7517" stroke="#633806" stroke-width="1"/><rect x="32" y="18" width="12" height="5" rx="1" fill="#f59f00"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#BA7517"/><rect x="38" y="43" width="4" height="9" rx="2" fill="white"/><circle cx="40" cy="56" r="2" fill="white"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#BA7517"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#BA7517"/></svg>`,
-  monk:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2a2e39" stroke="#4c505c" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#4c505c"/><circle cx="36" cy="22" r="4" fill="none" stroke="#787b86" stroke-width="1.5"/><circle cx="44" cy="22" r="4" fill="none" stroke="#787b86" stroke-width="1.5"/><line x1="32" y1="22" x2="29" y2="21" stroke="#787b86" stroke-width="1.5"/><line x1="48" y1="22" x2="51" y2="21" stroke="#787b86" stroke-width="1.5"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#4c505c"/><circle cx="35" cy="50" r="2" fill="#787b86"/><circle cx="40" cy="50" r="2" fill="#787b86"/><circle cx="45" cy="50" r="2" fill="#787b86"/><rect x="17" y="35" width="10" height="6" rx="3" fill="#4c505c" transform="rotate(-40,22,38)"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#4c505c"/><rect x="30" y="59" width="8" height="18" rx="3" fill="#4c505c"/><rect x="42" y="59" width="8" height="18" rx="3" fill="#4c505c"/></svg>`,
-  octopus:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e3a5f" stroke="#2962ff" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#2962ff"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#2962ff"/><rect x="14" y="35" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(-35,20,37)"/><rect x="14" y="44" width="13" height="5" rx="2.5" fill="#2962ff"/><rect x="14" y="52" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(25,20,54)"/><rect x="53" y="35" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(35,60,37)"/><rect x="53" y="44" width="13" height="5" rx="2.5" fill="#2962ff"/><rect x="53" y="52" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(-25,60,54)"/><circle cx="40" cy="49" r="5" fill="white" opacity="0.2"/><line x1="40" y1="44" x2="40" y2="54" stroke="white" stroke-width="1.5"/><line x1="35" y1="49" x2="45" y2="49" stroke="white" stroke-width="1.5"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#2962ff"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#2962ff"/></svg>`,
-  flash:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a2a" stroke="#D4537E" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#D4537E"/><path d="M38 12 L34 20 L39 20 L35 30 L44 18 L39 18 Z" fill="#2d1a2a" stroke="#D4537E" stroke-width="0.5"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#D4537E"/><path d="M44 43 L30 50 M46 48 L32 55" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#D4537E" transform="rotate(15,34,67)"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#D4537E" transform="rotate(-15,46,67)"/><rect x="16" y="42" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(-30,21,44)"/><rect x="53" y="36" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(45,58,38)"/></svg>`,
-  dualist:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a2a10" stroke="#26a69a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#3B6D11"/><line x1="34" y1="10" x2="30" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><line x1="46" y1="10" x2="50" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#3B6D11"/><path d="M36 44 L36 56 M33 47 L36 44 L39 47" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 56 L44 44 M41 53 L44 56 L47 53" stroke="#9FE1CB" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(20,58,41)"/></svg>`
+  beaver:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a3a2a" stroke="#26a69a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#26a69a"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#26a69a"/><path d="M33 44 L40 42 L47 44 L47 52 Q40 56 33 52 Z" fill="#1a3a2a" stroke="#0f6e56" stroke-width="1"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#26a69a"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#26a69a"/></svg>`,
+  cheetah:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a1a" stroke="#ef5350" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#ef5350"/><path d="M30 16 Q24 8 20 12" stroke="#ef5350" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M50 16 Q56 8 60 12" stroke="#ef5350" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#ef5350"/><path d="M40 57 L40 44 M36 48 L40 44 L44 48" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#ef5350"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#ef5350"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#ef5350" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#ef5350" transform="rotate(20,58,41)"/></svg>`,
+  bull:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a1a" stroke="#f44336" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#f44336"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#f44336"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#f44336"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#f44336"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#f44336"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#f44336"/></svg>`,
+  spider:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e1a3a" stroke="#7b6fd4" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#534AB7"/><circle cx="29" cy="13" r="5" fill="#534AB7"/><circle cx="51" cy="13" r="5" fill="#534AB7"/><circle cx="29" cy="13" r="3" fill="#1e1a3a"/><circle cx="51" cy="13" r="3" fill="#1e1a3a"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#534AB7"/><path d="M40 44 L40 57 M36 53 L40 57 L44 53" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#534AB7"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#534AB7"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#534AB7"/></svg>`,
+  elephant:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a2a10" stroke="#66bb6a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#4caf50"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#4caf50"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#4caf50"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#4caf50"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#4caf50"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#4caf50"/></svg>`,
+  owl:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2a1f00" stroke="#f59f00" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#BA7517"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#BA7517"/><rect x="38" y="43" width="4" height="9" rx="2" fill="white"/><circle cx="40" cy="56" r="2" fill="white"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#BA7517"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#BA7517"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#BA7517"/></svg>`,
+  wolf:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e1a3a" stroke="#9c88ff" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#673ab7"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#673ab7"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#673ab7"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#673ab7"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#673ab7"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#673ab7"/></svg>`,
+  fox:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a1a" stroke="#ff7043" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#e64a19"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#e64a19"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#e64a19"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#e64a19"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#e64a19"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#e64a19"/></svg>`,
+  eagle:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e3a5f" stroke="#42a5f5" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#1976d2"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#1976d2"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#1976d2"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#1976d2"/><rect x="14" y="35" width="13" height="5" rx="2.5" fill="#1976d2" transform="rotate(-35,20,37)"/><rect x="53" y="35" width="13" height="5" rx="2.5" fill="#1976d2" transform="rotate(35,60,37)"/></svg>`,
+  dolphin:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#003333" stroke="#26c6da" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#00acc1"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#00acc1"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#00acc1"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#00acc1"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#00acc1"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#00acc1"/></svg>`,
+  whale:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#0d1b2a" stroke="#5c6bc0" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#3949ab"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#3949ab"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#3949ab"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#3949ab"/><rect x="14" y="44" width="13" height="5" rx="2.5" fill="#3949ab"/><rect x="53" y="44" width="13" height="5" rx="2.5" fill="#3949ab"/></svg>`,
+  horse:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2a1500" stroke="#ffa726" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#f57c00"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#f57c00"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#f57c00"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#f57c00"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#f57c00"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#f57c00"/></svg>`,
+  camel:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2a1a00" stroke="#a1887f" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#795548"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#795548"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#795548"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#795548"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#795548"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#795548"/></svg>`,
+  octopus:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1e3a5f" stroke="#2962ff" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#2962ff"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#2962ff"/><rect x="14" y="35" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(-35,20,37)"/><rect x="14" y="44" width="13" height="5" rx="2.5" fill="#2962ff"/><rect x="14" y="52" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(25,20,54)"/><rect x="53" y="35" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(35,60,37)"/><rect x="53" y="44" width="13" height="5" rx="2.5" fill="#2962ff"/><rect x="53" y="52" width="13" height="5" rx="2.5" fill="#2962ff" transform="rotate(-25,60,54)"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#2962ff"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#2962ff"/></svg>`,
+  lynx:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a2a10" stroke="#9ccc65" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#7cb342"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#7cb342"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#7cb342"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#7cb342"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#7cb342" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#7cb342" transform="rotate(20,58,41)"/></svg>`,
+  rhino:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#2d1a2a" stroke="#D4537E" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#D4537E"/><path d="M38 12 L34 20 L39 20 L35 30 L44 18 L39 18 Z" fill="#2d1a2a" stroke="#D4537E" stroke-width="0.5"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#D4537E"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#D4537E"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#D4537E"/><rect x="16" y="42" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(-30,21,44)"/><rect x="53" y="36" width="11" height="5" rx="2.5" fill="#D4537E" transform="rotate(45,58,38)"/></svg>`
 };
+
 const PINFO={
-  guardian:{name:'The Guardian',sub:'Risk Control Master',c:'#26a69a',bg:'#1a3a2a'},
-  bull:{name:'The Raging Bull',sub:'Aggressive Long Player',c:'#ef5350',bg:'#2d1a1a'},
-  bear:{name:'The Calm Bear',sub:'Contrarian Short Seller',c:'#7b6fd4',bg:'#1e1a3a'},
-  hunter:{name:'The News Hunter',sub:'News-Driven Trader',c:'#f59f00',bg:'#2a1f00'},
-  monk:{name:'The Zen Observer',sub:'Patient Watcher',c:'#787b86',bg:'#2a2e39'},
-  octopus:{name:'The Diversifier',sub:'Balanced Multi-Holder',c:'#2962ff',bg:'#1e3a5f'},
-  flash:{name:'The Scalper',sub:'High-Frequency Trader',c:'#D4537E',bg:'#2d1a2a'},
-  dualist:{name:'The Dualist',sub:'Long & Short Strategist',c:'#26a69a',bg:'#1a2a10'}
+  beaver:{name:'The Builder 海狸',sub:'Disciplined System Trader',c:'#26a69a',bg:'#1a3a2a',
+    desc:'You build trading systems and follow them religiously. Patience is your superpower.'},
+  cheetah:{name:'The Sniper 猎豹',sub:'Precision Strike Trader',c:'#ef5350',bg:'#2d1a1a',
+    desc:'You wait for the perfect setup, then strike fast and hard. Timing is everything.'},
+  bull:{name:'The Trader 公牛',sub:'Aggressive Long Player',c:'#f44336',bg:'#2d1a1a',
+    desc:'You ride momentum with conviction. High energy, high action, high ambition.'},
+  spider:{name:'The Planner 蜘蛛',sub:'Data-Driven Strategist',c:'#7b6fd4',bg:'#1e1a3a',
+    desc:'You weave complex webs of analysis. Every trade is calculated, never impulsive.'},
+  elephant:{name:'The Protector 大象',sub:'Capital Preservation Pro',c:'#4caf50',bg:'#1a2a10',
+    desc:'Your first rule: protect capital. You grow slowly but almost never blow up.'},
+  owl:{name:'The Observer 猫头鹰',sub:'Patient Signal Watcher',c:'#f59f00',bg:'#2a1f00',
+    desc:'You observe quietly from above, waiting for clarity before making your move.'},
+  wolf:{name:'The Hunter 狼',sub:'Contrarian Value Stalker',c:'#9c88ff',bg:'#1e1a3a',
+    desc:'You hunt where others fear. You find value in chaos and profit in confusion.'},
+  fox:{name:'The Contrarian 狐狸',sub:'Against-The-Grain Trader',c:'#ff7043',bg:'#2d1a1a',
+    desc:'While everyone panics, you smile. You profit from crowd mistakes and overreactions.'},
+  eagle:{name:'The Visionary 雄鹰',sub:'Big-Picture Macro Thinker',c:'#42a5f5',bg:'#1e3a5f',
+    desc:'You spot trends before they start. Long-term vision, big positions, big patience.'},
+  dolphin:{name:'The Explorer 海豚',sub:'Curious Market Adventurer',c:'#26c6da',bg:'#003333',
+    desc:'You love discovering new strategies and markets. Playful, adaptable, always learning.'},
+  whale:{name:'The Thinker 鲸鱼',sub:'Deep Research Philosopher',c:'#5c6bc0',bg:'#0d1b2a',
+    desc:'You dive deep into fundamentals. Slow to act but devastatingly accurate when you do.'},
+  horse:{name:'The Rider 骏马',sub:'Trend-Following Momentum Chaser',c:'#ffa726',bg:'#2a1500',
+    desc:'You ride trends like a champion jockey. When momentum starts, you never fight it.'},
+  camel:{name:'The Survivor 骆驼',sub:'Desert Endurance Trader',c:'#a1887f',bg:'#2a1a00',
+    desc:'You survive when others perish. Capital preservation, risk control, playing the long game.'},
+  octopus:{name:'The Adapter 章鱼',sub:'Flexible Multi-Strategy Pro',c:'#2962ff',bg:'#1e3a5f',
+    desc:'Eight arms, eight strategies. You adapt to any market condition with remarkable grace.'},
+  lynx:{name:'The Opportunist 猞猁',sub:'Short-Term Catalyst Hunter',c:'#9ccc65',bg:'#1a2a10',
+    desc:'You pounce on short-term catalysts. Fast in, fast out, eyes always on the next move.'},
+  rhino:{name:'The Challenger 犀牛',sub:'High-Risk Conviction Trader',c:'#D4537E',bg:'#2d1a2a',
+    desc:'You charge at opportunities others run from. Bold bets, high conviction, no regrets.'}
 };
+
 
 function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
 function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%'}
@@ -512,23 +546,41 @@ function shortMargin(){return Object.entries(G.shorts).reduce((s,[c,p])=>{const 
 
 function getPersonaKey(){
   const tl=G.tradeLog;
+  if(!tl.length)return'owl';
   const sc=tl.filter(t=>t.action==='short').length;
   const bc=tl.filter(t=>t.action==='buy').length;
-  const nc=tl.filter(t=>t.news).length;
-  const slC=Object.values(G.sltp).filter(r=>r&&r.sl).length;
+  const slC=Object.keys(G.sltp).filter(c=>G.sltp[c]&&G.sltp[c].sl).length;
+  const tpC=Object.keys(G.sltp).filter(c=>G.sltp[c]&&G.sltp[c].tp).length;
   const stocks=new Set(tl.map(t=>t.code)).size;
   const freq={};tl.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
-  const mf=Math.max(0,...Object.values(freq));
-  if(sc>=4)return'bear';
-  if(sc>=2&&bc>=3)return'dualist';
-  if(slC>=3&&stocks>=3)return'guardian';
-  if(nc>=4)return'hunter';
-  if(tl.length>=18)return'flash';
-  if(stocks>=4&&mf<=3)return'octopus';
-  if(tl.length<=3)return'monk';
-  if(bc>=6&&slC===0)return'bull';
-  return'guardian';
+  const vals=Object.values(freq);
+  const mf=Math.max(0,...vals);
+  const nc=tl.filter(t=>t.news).length;
+  const n=tl.length;
+  const lv=longVal(),sm=shortMargin(),sp=shortPnl();
+  const total=G.cash+lv+sm+sp;
+  const pnl=total-G.init;
+  const pct=pnl/G.init;
+  // 16 types ranked by specificity
+  if(n>=18&&sc===0&&slC===0)return'rhino';        // extreme YOLO long
+  if(n>=18)return'lynx';                           // hyper-active
+  if(sc>=4&&bc>=3)return'octopus';                 // both sides multi-stock
+  if(sc>=4)return'fox';                            // heavy short/contrarian
+  if(sc>=2&&bc>=2)return'wolf';                    // long+short hunter
+  if(slC>=3&&tpC>=3&&stocks>=3)return'spider';     // planner: uses both SL+TP
+  if(slC>=3&&stocks>=3)return'elephant';           // protector: risk-first
+  if(slC>=3)return'beaver';                        // builder: structured
+  if(tpC>=3&&pct>0.05)return'horse';               // trend rider: TP profit-taking
+  if(nc>=4&&n>=8)return'cheetah';                  // news sniper
+  if(nc>=3)return'owl';                            // news observer
+  if(stocks>=4&&mf<=3)return'dolphin';             // explorer: broad market
+  if(stocks>=4)return'eagle';                      // visionary: wide horizon
+  if(mf>=6&&stocks<=2)return'whale';               // deep thinker on few stocks
+  if(n<=3)return'camel';                           // survivor: barely trades
+  if(pct<-0.05)return'bull';                       // bull who got wrecked
+  return'horse';                                   // default: trend follower
 }
+
 
 function checkSLTP(){
   Object.entries(G.sltp).forEach(([code,rules])=>{
@@ -648,7 +700,7 @@ function selectStock(code){
   selCode=code;
   const s=G.stocks.find(x=>x.code===code);
   document.getElementById('trade-stock-label').textContent=s.name+' ('+s.code+')';
-  document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / 股';
+  document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / share';
   const lq=G.longs[code]||0,sp=G.shorts[code];
   let h='';if(lq>0)h+='Long: '+lq+' shares  ';if(sp)h+='Short: '+sp.qty+' shares';
   document.getElementById('tp-held').textContent=h;
@@ -678,7 +730,7 @@ function setMode(m){
     ml.className='mode-btn mode-short-off';ms.className='mode-btn mode-short-on';
     document.getElementById('short-tip').style.display='block';
     document.getElementById('sl-tp-sec').style.display='none';
-    document.getElementById('trade-btns').innerHTML='<button class="btn-sell" onclick="doShort()">卖空（建仓）</button><button class="btn-cover" onclick="doCover()">买入（平空）</button>';
+    document.getElementById('trade-btns').innerHTML='<button class="btn-sell" onclick="doShort()">Sell Short (Open)</button><button class="btn-cover" onclick="doCover()">Buy to Cover</button>';
   }
   updateCost();
 }
@@ -692,11 +744,11 @@ function saveSLTP(code){
 }
 
 function doBuy(){
-  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
+  if(!selCode){addLog('❌ Select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   if(!qty){addLog('❌ Invalid quantity.','er');return;}
   const cost=s.price*qty;
-  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}，余额 ${fmt(G.cash)}.`,'er');renderLog();return;}
+  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}, have ${fmt(G.cash)}.`,'er');renderLog();return;}
   G.cash-=cost;G.longs[selCode]=(G.longs[selCode]||0)+qty;
   saveSLTP(selCode);
   G.tradeLog.push({day:G.day,action:'buy',code:selCode,qty,price:s.price,news:isNews()});
@@ -705,7 +757,7 @@ function doBuy(){
   renderAll();
 }
 function doSell(){
-  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
+  if(!selCode){addLog('❌ Select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   const h=G.longs[selCode]||0;
   if(!qty||qty>h){addLog(`❌ Long position: ${h} shares. Cannot sell ${qty}.`,'er');renderLog();return;}
@@ -716,7 +768,7 @@ function doSell(){
   renderAll();
 }
 function doShort(){
-  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
+  if(!selCode){addLog('❌ Select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   if(!qty){addLog('❌ Invalid quantity.','er');return;}
   const m=s.price*qty*0.5;
@@ -728,7 +780,7 @@ function doShort(){
   renderAll();
 }
 function doCover(){
-  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
+  if(!selCode){addLog('❌ Select a stock first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),pos=G.shorts[selCode];
   if(!pos){addLog('❌ No short to cover.','er');renderLog();return;}
   const qty=parseInt(document.getElementById('qty').value)||0;
@@ -772,7 +824,7 @@ function renderHoldings(){
     const s=G.stocks.find(x=>x.code===c),pnl=(pos.entryPrice-s.price)*pos.qty;
     rows.push(`<div class="pos-row"><div><div class="pos-name">${s.name}<span class="tag" style="background:#2d1a1a;color:#ef5350;margin-left:4px">S</span></div><div class="pos-detail">${pos.qty} @ $${pos.entryPrice.toFixed(2)}</div></div><div class="pos-pnl" style="color:${pnl>=0?'#26a69a':'#ef5350'}">${pnl>=0?'+':''}${fmt(pnl)}</div></div>`);
   });
-  el.innerHTML=rows.length?rows.join(''):'<div style="font-size:10px;color:var(--tv-text2)">暂无持仓</div>';
+  el.innerHTML=rows.length?rows.join(''):'<div style="font-size:10px;color:var(--tv-text2)">No open positions</div>';
 }
 function renderLog(){
   document.getElementById('log-el').innerHTML=G.rawLog.slice(0,20).map(m=>`<div class="le ${m.type||''}">${m.msg||m}</div>`).join('');
@@ -856,8 +908,8 @@ function renderReport(r){
     </div>
     <div style="font-size:11px;line-height:1.7;color:var(--tv-text2);padding:8px 10px;background:var(--tv-bg3);border-radius:4px;margin-bottom:12px">
       <div style="margin-bottom:4px">Diversification (${r.divScore}pts): Stocks held and position concentration. 3+ stocks, none above 40% scores highest.</div>
-      <div style="margin-bottom:4px">风险控制（${r.riskScore}pts): Stop-loss rate on longs and short margin usage.</div>
-      <div style="margin-bottom:4px">交易纪律（${r.discScore}pts): Trade frequency and SL/TP execution. Fewer planned trades score highest.</div>
+      <div style="margin-bottom:4px">Risk Control (${r.riskScore}pts): Stop-loss rate on longs and short margin usage.</div>
+      <div style="margin-bottom:4px">Discipline (${r.discScore}pts): Trade frequency and SL/TP execution. Fewer planned trades score highest.</div>
       ${r.scoreComment?`<div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--tv-border)"><strong style="color:var(--tv-text)">AI Comment: </strong>${r.scoreComment}</div>`:''}
     </div>
     <div class="rc-grid">
@@ -873,7 +925,7 @@ function renderReport(r){
       <span>Top: ${fav?fav[0]+'(×'+fav[1]+')':'—'} · SL:${G.slT} TP:${G.tpT}</span>
       <span>Powered by DeepSeek AI</span>
     </div>
-    <div class="rc-disc">AI-generated from fictional simulation data. Not financial advice. No real funds. Consult a licensed advisor for real investment decisions. Developed by Elena Zhang · Educational use only.</div>
+    <div class="rc-disc">This report is AI-generated from fictional simulation data for educational purposes only. It does not constitute investment advice or a recommendation of any financial product. All figures are simulated virtual values. Past simulated performance does not predict real results. Always consult a licensed financial advisor. © 2026 Market Lab · Developed by Elena Zhang · Educational use only.</div>
   </div>`;
 }
 
@@ -884,36 +936,32 @@ async function downloadReport(){
   if(!card){alert('Please generate the report first');return;}
   const btn=document.getElementById('dl-btn');
   btn.textContent='Generating…';btn.disabled=true;
+  const modal=document.querySelector('.rpt-modal');
+  const prevOverflow=modal?modal.style.overflow:'';
+  const prevMaxH=modal?modal.style.maxHeight:'';
+  if(modal){modal.style.overflow='visible';modal.style.maxHeight='none';}
   try{
-    const canvas=await html2canvas(card,{
-      scale:2,
-      backgroundColor:'#1e222d',
-      useCORS:true,
-      logging:false,
-      scrollX:0,
-      scrollY:-window.scrollY,
-      windowWidth:document.documentElement.scrollWidth,
-      windowHeight:document.documentElement.scrollHeight,
-      onclone:(doc)=>{
-        const el=doc.getElementById('report-card');
-        if(el){el.style.width='640px';el.style.maxWidth='640px';}
-      }
-    });
-    const link=document.createElement('a');
-    link.href=canvas.toDataURL('image/png');
-    link.download='trading-report.png';
-    link.style.display='none';
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(()=>{if(link.parentNode)link.parentNode.removeChild(link);},200);
-  }catch(e){alert('Download failed: '+e.message);}
+    const canvas=await html2canvas(card,{scale:2,backgroundColor:'#1e222d',useCORS:true,logging:false});
+    if(modal){modal.style.overflow=prevOverflow;modal.style.maxHeight=prevMaxH;}
+    // Store data and trigger via hidden <a> in DOM
+    const url=canvas.toDataURL('image/png');
+    let a=document.getElementById('_dl_anchor');
+    if(!a){a=document.createElement('a');a.id='_dl_anchor';a.style.display='none';document.body.appendChild(a);}
+    a.href=url;
+    a.download='trading-report.png';
+    a.click();
+    setTimeout(()=>{if(a.parentNode)a.parentNode.removeChild(a);},1000);
+  }catch(e){
+    if(modal){modal.style.overflow=prevOverflow;modal.style.maxHeight=prevMaxH;}
+    alert('Download failed: '+e.message);
+  }
   btn.textContent='⬇ Download';btn.disabled=false;
 }
 
 document.getElementById('next-btn').onclick=()=>{
   if(G.day>=20){generateReport();return;}
   G.day++;
-  document.getElementById('day-lbl').textContent='第 '+G.day;
+  document.getElementById('day-lbl').textContent='Day '+G.day;
   const news=NEWS.find(e=>e.day===G.day);
   const nb=document.getElementById('news-b');
   if(news){nb.textContent=news.msg;nb.className='news-bar show';}else{nb.className='news-bar';}
