@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .main{display:grid;grid-template-columns:1fr 260px;flex:1;overflow:hidden;min-height:0}
 
 /* Chart panel */
-.chart-panel{display:flex;flex-direction:column;border-right:0.5px solid var(--tv-border);overflow:hidden}
+.chart-panel{display:flex;flex-direction:column;border-right:0.5px solid var(--tv-border);overflow:hidden;min-height:0}
 .chart-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--tv-border);flex-shrink:0}
 .chart-title{font-size:13px;font-weight:500;color:var(--tv-text)}
 .chart-ohlc{font-size:11px;color:var(--tv-text2)}
@@ -190,74 +190,81 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 }
 
 /* ── Mobile: full reflow ── */
+  .sk-pr{font-size:13px}
+  #kline-wrap{height:180px}
+  .hdr-logo span:first-child{font-size:13px}
+}
+
+
 @media(max-width:768px){
-  /* Kill fixed height — let page scroll naturally */
-  .app{height:auto;overflow:visible;min-height:100vh}
-  .main{grid-template-columns:1fr;overflow:visible;height:auto}
-  .chart-panel{border-right:none;border-bottom:0.5px solid var(--tv-border);height:auto}
-  .trade-panel{overflow:visible;height:auto}
+  /* ① Full-page scroll */
+  .app{height:auto!important;overflow:visible!important;display:flex!important;flex-direction:column!important;min-height:100vh}
 
-  /* Header */
-  .hdr{padding:0 12px;height:44px;flex-wrap:wrap}
-  .hdr-right{gap:5px}
-  .badge{font-size:9px;padding:1px 6px}
-  .btn-next{font-size:11px;padding:5px 10px}
-  .btn-reset{padding:5px 8px}
-  .day-pill{font-size:10px;padding:3px 7px}
-
-  /* Stats — scrollable strip */
-  .stats-row{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:0.5px solid var(--tv-border)}
-  .stat{flex:0 0 auto;width:110px;padding:8px 12px;border-right:0.5px solid var(--tv-border)}
+  /* ② Stats: horizontal scroll strip */
+  .stats-row{display:flex!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;border-bottom:0.5px solid var(--tv-border);flex-wrap:nowrap}
+  .stat{flex:0 0 100px!important;padding:8px 10px;border-right:0.5px solid var(--tv-border)}
+  .stat:last-child{border-right:none}
   .stat-lbl{font-size:9px}
-  .stat-val{font-size:14px}
+  .stat-val{font-size:13px}
 
-  /* Stock grid — 2 cols */
-  .mkt-grid{grid-template-columns:repeat(2,1fr)}
-  .sk{padding:8px 10px}
-  .sk-nm{font-size:11px}
-  .sk-cd{font-size:9px}
-  .sk-pr{font-size:14px}
+  /* ③ Stock grid: 3 cols */
+  .mkt-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important}
+  .sk{padding:7px 8px}
+  .sk-nm{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sk-cd{font-size:9px;margin-top:0}
+  .sk-pr{font-size:12px}
+  .sk-ch{font-size:10px}
 
-  /* Chart */
-  #kline-wrap{height:220px;padding:8px;flex:none}
+  /* ④ Main: single column vertical stack */
+  .main{display:flex!important;flex-direction:column!important;height:auto!important;overflow:visible!important;min-height:0}
 
-  /* Scores */
+  /* ⑤ Chart panel */
+  .chart-panel{border-right:none!important;border-bottom:0.5px solid var(--tv-border);height:auto!important;overflow:visible!important;flex-shrink:0}
+  .chart-hdr{padding:8px 12px}
+  .chart-title{font-size:12px}
+  .chart-ohlc{font-size:10px}
+  #kline-wrap{height:200px!important;flex:none!important;min-height:0!important;padding:6px}
+  #kline{display:block}
+
+  /* ⑥ Score panel */
   .score-panel{padding:10px 12px}
-  .score-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .score-grid{gap:8px}
   .score-key{font-size:9px}
   .score-num{font-size:11px}
-  .score-tip-text{font-size:10px;margin-top:6px}
+  .score-tip-text{font-size:10px;padding:5px 7px;margin-top:5px}
 
-  /* Log */
+  /* ⑦ Log */
   .log-panel{max-height:80px;padding:6px 12px}
   .le{font-size:10px}
+  .log-lbl{font-size:9px}
 
-  /* Trade panel — generous padding */
+  /* ⑧ Trade panel */
+  .trade-panel{overflow:visible!important;height:auto!important;flex-shrink:0}
   .trade-sec{padding:10px 14px}
-  .mode-btn{font-size:12px;padding:7px}
-  .field-val{font-size:15px}
-  .tv-input{font-size:14px;padding:7px 9px}
-  .sl-tp-box{padding:9px;margin:8px 0}
-  .sl-label{font-size:10px;width:72px}
+  .trade-sec-title{font-size:9px;margin-bottom:6px}
+  .mode-btn{font-size:12px;padding:7px 5px}
+  .field-lbl{font-size:9px}
+  .field-val{font-size:14px;margin-bottom:5px}
+  .tv-input{font-size:14px;padding:8px}
+  .sl-tp-box{padding:8px;margin:7px 0}
+  .sl-tp-lbl{font-size:9px;margin-bottom:5px}
+  .sl-label{font-size:10px;width:68px}
   .sl-input{font-size:12px;padding:5px 7px}
   .action-btns{gap:6px}
-  .btn-buy,.btn-sell,.btn-cover{font-size:13px;padding:10px 8px}
-
-  /* Positions */
+  .btn-buy,.btn-sell,.btn-cover{font-size:13px;padding:11px 6px}
+  .cost-hint{font-size:10px}
+  .pos-row{padding:5px 0}
   .pos-name{font-size:11px}
   .pos-detail{font-size:10px}
   .pos-pnl{font-size:11px}
 
-  /* Footer */
-  .footer-bar{flex-direction:column;gap:1px;padding:8px 14px;text-align:center;height:auto}
-  .footer-bar span:last-child{display:none}
-}
+  /* ⑨ Report modal: slide up from bottom */
+  .rpt-overlay.show{align-items:flex-end;padding:0}
+  .rpt-modal{border-radius:12px 12px 0 0;max-height:88vh;overflow-y:auto;width:100%;margin:0}
 
-@media(max-width:420px){
-  .stat{width:95px}
-  .sk-pr{font-size:13px}
-  #kline-wrap{height:180px}
-  .hdr-logo span:first-child{font-size:13px}
+  /* ⑩ Footer */
+  .footer-bar{height:auto!important;padding:8px 14px;flex-direction:column;gap:2px;text-align:center;font-size:10px}
+  .footer-bar span:last-child{display:none}
 }
 </style>
 </head>
@@ -587,17 +594,12 @@ function renderScores(){
   document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ Great position management!';
 }
 
-function resizeKline(){
-  const wrap=document.getElementById('kline-wrap');
-  const canv=document.getElementById('kline');
-  canv.width=wrap.clientWidth;
-  canv.height=wrap.clientHeight;
-}
-
 function drawKline(code){
   const s=G.stocks.find(x=>x.code===code);
   const canv=document.getElementById('kline');
-  resizeKline();
+  const wrap=document.getElementById('kline-wrap');
+  canv.width=wrap.clientWidth||360;
+  canv.height=wrap.clientHeight||200;
   const W=canv.width,H=canv.height;
   const ctx=canv.getContext('2d');ctx.clearRect(0,0,W,H);
   const candles=s.candles,n=candles.length;if(!n||H<40)return;
@@ -926,24 +928,10 @@ document.getElementById('reset-btn').onclick=()=>{
   selCode=null;mode='long';initG();setMode('long');renderAll();
 };
 
-window.addEventListener('resize',()=>{if(selCode)drawKline(selCode);});
-
-/* size kline canvas properly after layout */
-function initKlineSize(){
-  const wrap=document.getElementById('kline-wrap');
-  const canv=document.getElementById('kline');
-  const w=wrap.clientWidth||360;
-  const h=wrap.clientHeight>40?wrap.clientHeight:220;
-  canv.width=w;canv.height=h;
-}
+window.addEventListener('resize',()=>{if(selCode)setTimeout(()=>drawKline(selCode),50);});
+window.addEventListener('orientationchange',()=>{setTimeout(()=>{if(selCode)drawKline(selCode);},300);});
 
 initG();setMode('long');renderAll();
-setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},150);
-
-/* Re-size on orientation change */
-window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},300);
-});
 </script>
 </body>
 </html>
