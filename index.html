@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Market Lab · Trading Simulator</title>
+<title>Market Lab · 股票交易模拟器</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -266,23 +266,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="disc-header">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7ab8f5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span style="font-size:15px;font-weight:500">Important Disclaimer</span>
+        <span style="font-size:15px;font-weight:500">重要免责声明</span>
       </div>
-      <div style="background:#1a2744;border:0.5px solid #2a3f6f;border-radius:4px;padding:7px 10px;margin-bottom:14px;font-size:11px;color:#7ab8f5;line-height:1.5">Please read carefully before proceeding.</div>
+      <div style="background:#1a2744;border:0.5px solid #2a3f6f;border-radius:4px;padding:7px 10px;margin-bottom:14px;font-size:11px;color:#7ab8f5;line-height:1.5">请仔细阅读后再进入模拟器。</div>
     </div>
     <div class="disc-body">
-      <div class="disc-item"><div class="disc-icon">🖥️</div><div><div class="disc-item-title">Educational simulation only</div><div class="disc-item-body">This is a fictional trading game for educational and training purposes only. All stocks, prices, and market events are entirely simulated and do not reflect any real securities or financial markets.</div></div></div>
-      <div class="disc-item"><div class="disc-icon">🚫</div><div><div class="disc-item-title">Not financial advice</div><div class="disc-item-body">Nothing in this simulator constitutes investment advice, a solicitation to buy or sell securities, or a recommendation of any financial product. Simulated performance does not predict real-world results.</div></div></div>
-      <div class="disc-item"><div class="disc-icon">💰</div><div><div class="disc-item-title">No real money involved</div><div class="disc-item-body">All currency values are virtual and have no monetary value. No real funds are deposited, traded, or at risk at any time.</div></div></div>
-      <div class="disc-item"><div class="disc-icon">👤</div><div><div class="disc-item-title">Seek professional advice</div><div class="disc-item-body">For real investment decisions, always consult a licensed financial advisor. Trading real securities involves substantial risk of loss.</div></div></div>
-      <div class="disc-item" style="margin-bottom:0"><div class="disc-icon">🔒</div><div><div class="disc-item-title">No data collection</div><div class="disc-item-body">This simulator does not collect, store, or share any personal data. All activity exists only in your current browser session.</div></div></div>
+      <div class="disc-item"><div class="disc-icon">🖥️</div><div><div class="disc-item-title">仅供教育培训使用</div><div class="disc-item-body">本程序为纯虚构模拟交易游戏，专为金融知识教育和实习培训设计。所有股票名称、价格和市场事件均为虚构，与任何真实证券或金融市场无关。</div></div></div>
+      <div class="disc-item"><div class="disc-icon">🚫</div><div><div class="disc-item-title">不构成任何投资建议</div><div class="disc-item-body">本模拟器中的任何内容均不构成投资建议、证券买卖邀请或任何金融产品推荐。模拟交易结果不代表真实市场表现，不具有任何参考价值。</div></div></div>
+      <div class="disc-item"><div class="disc-icon">💰</div><div><div class="disc-item-title">无真实资金</div><div class="disc-item-body">所有金额均为虚拟数字，不具有任何货币价值。本模拟器不涉及任何真实资金的存入、交易或风险。</div></div></div>
+      <div class="disc-item"><div class="disc-icon">👤</div><div><div class="disc-item-title">请咨询专业人士</div><div class="disc-item-body">进行真实投资决策前，请务必咨询持牌金融顾问。真实证券交易存在重大亏损风险，未必适合所有人。</div></div></div>
+      <div class="disc-item" style="margin-bottom:0"><div class="disc-icon">🔒</div><div><div class="disc-item-title">不收集个人数据</div><div class="disc-item-body">本模拟器不收集、存储或共享任何个人信息。所有交易数据仅存在于当前浏览器会话中，关闭页面后自动清除。</div></div></div>
     </div>
     <div class="disc-footer">
       <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:12px">
         <input type="checkbox" id="disc-check" onchange="document.getElementById('disc-btn').classList.toggle('ready',this.checked)" style="width:14px;height:14px;margin-top:2px;cursor:pointer;accent-color:#2962ff;flex-shrink:0">
-        <label for="disc-check" style="font-size:11px;color:#787b86;cursor:pointer;line-height:1.5">I have read and understood the disclaimer above. I agree to use this simulator for educational purposes only and acknowledge that no real financial transactions are involved.</label>
+        <label for="disc-check" style="font-size:11px;color:#787b86;cursor:pointer;line-height:1.5">我已阅读并理解上述免责声明，同意仅将本模拟器用于学习和培训目的，并确认本模拟器不涉及任何真实金融交易。</label>
       </div>
-      <button class="disc-enter-btn" id="disc-btn" onclick="enterSim()">I Agree — Start Simulation</button>
+      <button class="disc-enter-btn" id="disc-btn" onclick="enterSim()">我同意 — 进入模拟器</button>
       <div style="text-align:center;margin-top:8px;font-size:10px;color:#4c505c">&copy; 2026 Market Lab &middot; Developed by Elena Zhang &middot; For educational use only</div>
     </div>
   </div>
@@ -294,12 +294,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="hdr">
     <div class="hdr-logo">
       <span>📈 Market Lab</span>
-      <span class="badge">Advanced</span>
+      <span class="badge">进阶版</span>
     </div>
     <div class="hdr-right">
       <span class="day-pill" id="day-lbl">Day 1</span>
-      <button class="btn-next" id="next-btn">Next Day →</button>
-      <button class="btn-reset" id="reset-btn">↺ Reset</button>
+      <button class="btn-next" id="next-btn">下一天 →</button>
+      <button class="btn-reset" id="reset-btn">↺ 重置</button>
     </div>
   </div>
 
@@ -308,11 +308,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- Stats -->
   <div class="stats-row">
-    <div class="stat"><div class="stat-lbl">Cash</div><div class="stat-val" id="s-cash">$100,000</div></div>
-    <div class="stat"><div class="stat-lbl">Long Value</div><div class="stat-val" id="s-long">$0</div></div>
-    <div class="stat"><div class="stat-lbl">Short P&amp;L</div><div class="stat-val" id="s-short">$0</div></div>
-    <div class="stat"><div class="stat-lbl">Total Assets</div><div class="stat-val" id="s-total">$100,000</div></div>
-    <div class="stat" style="border-right:none"><div class="stat-lbl">Total P&amp;L</div><div class="stat-val" id="s-pnl">$0</div></div>
+    <div class="stat"><div class="stat-lbl">现金余额</div><div class="stat-val" id="s-cash">$100,000</div></div>
+    <div class="stat"><div class="stat-lbl">多仓市值</div><div class="stat-val" id="s-long">$0</div></div>
+    <div class="stat"><div class="stat-lbl">空仓浮盈</div><div class="stat-val" id="s-short">$0</div></div>
+    <div class="stat"><div class="stat-lbl">总资产</div><div class="stat-val" id="s-total">$100,000</div></div>
+    <div class="stat" style="border-right:none"><div class="stat-lbl">总盈亏</div><div class="stat-val" id="s-pnl">$0</div></div>
   </div>
 
   <!-- Stock grid -->
@@ -324,7 +324,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <!-- Chart + score + log -->
     <div class="chart-panel">
       <div class="chart-hdr">
-        <span class="chart-title" id="c-title">Select a stock to view chart</span>
+        <span class="chart-title" id="c-title">点击股票卡片查看K线图</span>
         <span class="chart-ohlc" id="c-info"></span>
       </div>
       <div id="kline-wrap"><canvas id="kline"></canvas></div>
@@ -332,23 +332,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="score-panel">
         <div class="score-grid">
           <div class="score-item">
-            <div class="score-row"><span class="score-key">Diversification</span><span class="score-num" id="sc-div" style="color:#2962ff">—</span></div>
+            <div class="score-row"><span class="score-key">分散度</span><span class="score-num" id="sc-div" style="color:#2962ff">—</span></div>
             <div class="score-bar-bg"><div class="score-bar-fill" id="sb-div" style="width:0%;background:#2962ff"></div></div>
           </div>
           <div class="score-item">
-            <div class="score-row"><span class="score-key">Risk Control</span><span class="score-num" id="sc-risk" style="color:#26a69a">—</span></div>
+            <div class="score-row"><span class="score-key">风险控制</span><span class="score-num" id="sc-risk" style="color:#26a69a">—</span></div>
             <div class="score-bar-bg"><div class="score-bar-fill" id="sb-risk" style="width:0%;background:#26a69a"></div></div>
           </div>
           <div class="score-item">
-            <div class="score-row"><span class="score-key">Discipline</span><span class="score-num" id="sc-disc" style="color:#f59f00">—</span></div>
+            <div class="score-row"><span class="score-key">交易纪律</span><span class="score-num" id="sc-disc" style="color:#f59f00">—</span></div>
             <div class="score-bar-bg"><div class="score-bar-fill" id="sb-disc" style="width:0%;background:#f59f00"></div></div>
           </div>
         </div>
-        <div class="score-tip-text" id="score-tip">Start trading to see your position management scores.</div>
+        <div class="score-tip-text" id="score-tip">开始交易后将显示仓位管理评分与建议。</div>
       </div>
 
       <div class="log-panel">
-        <div class="log-lbl">Trade Log</div>
+        <div class="log-lbl">交易日志</div>
         <div id="log-el"></div>
       </div>
     </div>
@@ -358,28 +358,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
       <!-- Mode -->
       <div class="trade-sec">
-        <div class="trade-sec-title">Mode</div>
+        <div class="trade-sec-title">交易模式</div>
         <div class="mode-row">
-          <button class="mode-btn mode-long" id="mode-long" onclick="setMode('long')">Long</button>
-          <button class="mode-btn mode-short-off" id="mode-short" onclick="setMode('short')">Short</button>
+          <button class="mode-btn mode-long" id="mode-long" onclick="setMode('long')">做多</button>
+          <button class="mode-btn mode-short-off" id="mode-short" onclick="setMode('short')">做空</button>
         </div>
       </div>
 
       <!-- Short tip -->
       <div class="short-tip" id="short-tip" style="margin:0;border-radius:0;padding:8px 12px;border-bottom:0.5px solid var(--tv-border)">
-        <strong style="color:var(--tv-red)">Short selling:</strong> Borrow shares and sell them, then buy back lower to profit. Margin = price × qty × 50%. You lose if price rises.
+        <strong style="color:var(--tv-red)">做空原理：</strong>借入股票卖出，预期下跌后低价买回获利。保证金 = 股价 × 数量 × 50%，股价上涨则亏损。
       </div>
 
       <!-- Price info -->
       <div class="trade-sec">
-        <div class="trade-sec-title" id="trade-stock-label">Select a stock</div>
+        <div class="trade-sec-title" id="trade-stock-label">请先选择股票</div>
         <div style="margin-bottom:6px">
-          <div class="field-lbl">Price</div>
+          <div class="field-lbl">当前价</div>
           <div class="field-val" id="tp-price">—</div>
           <div style="font-size:10px;color:var(--tv-text2)" id="tp-held"></div>
         </div>
         <div>
-          <div class="field-lbl">Quantity (shares)</div>
+          <div class="field-lbl">数量（股）</div>
           <input type="number" id="qty" class="tv-input" min="1" value="100" step="100">
           <div class="cost-hint" id="tp-cost"></div>
         </div>
@@ -388,31 +388,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <!-- SL/TP -->
       <div class="trade-sec" id="sl-tp-sec">
         <div class="sl-tp-box">
-          <div class="sl-tp-lbl">🛡 Stop-Loss / Take-Profit</div>
+          <div class="sl-tp-lbl">🛡 止损 / 止盈设置（可选）</div>
           <div class="sl-tp-row">
-            <span class="sl-label sl">Stop-Loss</span>
-            <input type="number" id="sl-price" class="sl-input" placeholder="Auto-sell below" step="0.01">
+            <span class="sl-label sl">止损价</span>
+            <input type="number" id="sl-price" class="sl-input" placeholder="低于此价自动卖出" step="0.01">
             <span style="font-size:10px;color:var(--tv-text2)" id="sl-hint"></span>
           </div>
           <div class="sl-tp-row">
-            <span class="sl-label tp">Take-Profit</span>
-            <input type="number" id="tp-price-input" class="sl-input" placeholder="Auto-sell above" step="0.01">
+            <span class="sl-label tp">止盈价</span>
+            <input type="number" id="tp-price-input" class="sl-input" placeholder="高于此价自动卖出" step="0.01">
           </div>
-          <div style="font-size:10px;color:var(--tv-text2);margin-top:4px">Auto-checked each day</div>
+          <div style="font-size:10px;color:var(--tv-text2);margin-top:4px">每天推进时自动检查触发条件</div>
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="trade-sec">
         <div class="action-btns" id="trade-btns">
-          <button class="btn-buy" onclick="doBuy()">Buy (Long)</button>
+          <button class="btn-buy" onclick="doBuy()">买入（做多）</button>
           <button class="btn-sell" onclick="doSell()">Sell</button>
         </div>
       </div>
 
       <!-- Positions -->
       <div class="trade-sec" style="flex:1">
-        <div class="trade-sec-title">Open Positions</div>
+        <div class="trade-sec-title">持仓明细</div>
         <div id="hld-list"><div style="font-size:10px;color:var(--tv-text2)">暂无持仓</div></div>
       </div>
 
@@ -421,7 +421,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="footer-bar">
     <span>Developed by Elena Zhang &middot; &copy; 2026 Market Lab</span>
-    <span>For educational use only — not financial advice — no real funds involved</span>
+    <span>仅供教育用途 · 不构成投资建议 · 不涉及真实资金</span>
   </div>
 
 </div>
@@ -430,10 +430,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="rpt-overlay" id="rpt-overlay">
   <div class="rpt-modal">
     <div class="rpt-bar">
-      <h2>📊 Trading Style Report</h2>
+      <h2>📊 交易风格报告</h2>
       <div class="rpt-btns">
-        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Download</button>
-        <button class="rpt-btn" onclick="closeReport()">✕ Close</button>
+        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ 下载图片</button>
+        <button class="rpt-btn" onclick="closeReport()">✕ 关闭</button>
       </div>
     </div>
     <div id="report-content"></div>
@@ -442,25 +442,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const STOCKS=[
-  {code:'TECH',name:'Tech Giant',base:120,vol:0.04,sector:'Technology'},
-  {code:'BANK',name:'Big Bank',base:45,vol:0.02,sector:'Financials'},
-  {code:'ENRG',name:'Clean Energy',base:88,vol:0.06,sector:'Energy'},
-  {code:'CONS',name:'Consumer',base:210,vol:0.03,sector:'Consumer'},
-  {code:'MANU',name:'Adv. Mfg',base:66,vol:0.05,sector:'Industrial'},
-  {code:'HLTH',name:'HealthCare',base:155,vol:0.035,sector:'Healthcare'},
+  {code:'TECH',name:'科技龙头',base:120,vol:0.04,sector:'科技'},
+  {code:'BANK',name:'银行股',base:45,vol:0.02,sector:'金融'},
+  {code:'ENRG',name:'新能源',base:88,vol:0.06,sector:'能源'},
+  {code:'CONS',name:'消费白马',base:210,vol:0.03,sector:'消费'},
+  {code:'MANU',name:'先进制造',base:66,vol:0.05,sector:'制造'},
+  {code:'HLTH',name:'医疗健康',base:155,vol:0.035,sector:'医疗'},
 ];
 const NEWS=[
-  {day:2,stock:'TECH',eff:1.10,msg:'📰 Tech Giant wins major government contract — sector surges!'},
-  {day:4,stock:'ENRG',eff:0.87,msg:'📰 Oil prices plunge; clean energy subsidies disappoint.'},
-  {day:6,stock:null,eff:0.95,msg:'📰 Fed hikes rates 25bps — global markets under pressure.'},
-  {day:8,stock:'BANK',eff:1.07,msg:'📰 Central bank cuts reserve ratio — banks rally!'},
-  {day:10,stock:'HLTH',eff:1.13,msg:'📰 Health insurance policy boost — healthcare sector jumps!'},
-  {day:12,stock:'CONS',eff:1.12,msg:'📰 Consumer spending beats estimates — blue chips hit highs!'},
-  {day:14,stock:null,eff:1.04,msg:'📰 Major stimulus announced — broad market rallies!'},
-  {day:15,stock:'MANU',eff:0.88,msg:'📰 Export data misses — industrials pull back.'},
-  {day:17,stock:'TECH',eff:0.86,msg:'📰 Regulators target tech firms — sector drops sharply!'},
-  {day:19,stock:null,eff:0.93,msg:'📰 Foreign capital outflows spike — panic selling.'},
-  {day:20,stock:'ENRG',eff:1.18,msg:'📰 EV sales beat forecasts — clean energy limit-up!'},
+  {day:2,stock:'TECH',eff:1.10,msg:'📰 科技龙头获大型政府合同，板块大涨！'},
+  {day:4,stock:'ENRG',eff:0.87,msg:'📰 油价暴跌，新能源补贴政策不及预期。'},
+  {day:6,stock:null,eff:0.95,msg:'📰 美联储加息25BP，全球市场承压。'},
+  {day:8,stock:'BANK',eff:1.07,msg:'📰 央行降准50BP，银行板块强势反弹！'},
+  {day:10,stock:'HLTH',eff:1.13,msg:'📰 医保政策利好，医疗健康板块大幅上涨！'},
+  {day:12,stock:'CONS',eff:1.12,msg:'📰 消费节数据亮眼，消费白马创年内新高！'},
+  {day:14,stock:null,eff:1.04,msg:'📰 经济刺激政策出台，A股全线飘红！'},
+  {day:15,stock:'MANU',eff:0.88,msg:'📰 出口数据低于预期，制造业板块回调。'},
+  {day:17,stock:'TECH',eff:0.86,msg:'📰 监管出手，科技板块大幅下挫！'},
+  {day:19,stock:null,eff:0.93,msg:'📰 外围市场动荡，北向资金大幅流出。'},
+  {day:20,stock:'ENRG',eff:1.18,msg:'📰 新能源汽车销量超预期，板块涨停潮！'},
 ];
 const PSVG={
   guardian:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a3a2a" stroke="#26a69a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#26a69a"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#26a69a"/><path d="M33 44 L40 42 L47 44 L47 52 Q40 56 33 52 Z" fill="#1a3a2a" stroke="#1D9E75" stroke-width="1"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#26a69a"/><rect x="17" y="40" width="10" height="6" rx="3" fill="#26a69a"/><rect x="53" y="40" width="10" height="6" rx="3" fill="#26a69a"/></svg>`,
@@ -473,17 +473,17 @@ const PSVG={
   dualist:`<svg viewBox="0 0 80 100" width="72" height="90"><ellipse cx="40" cy="22" rx="13" ry="13" fill="#1a2a10" stroke="#26a69a" stroke-width="1.5"/><circle cx="40" cy="22" r="8" fill="#3B6D11"/><line x1="34" y1="10" x2="30" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><line x1="46" y1="10" x2="50" y2="20" stroke="#97C459" stroke-width="2" stroke-linecap="round"/><rect x="27" y="38" width="26" height="22" rx="4" fill="#3B6D11"/><path d="M36 44 L36 56 M33 47 L36 44 L39 47" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 56 L44 44 M41 53 L44 56 L47 53" stroke="#9FE1CB" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="42" y="59" width="8" height="16" rx="3" fill="#3B6D11"/><rect x="17" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(-20,22,41)"/><rect x="53" y="38" width="10" height="6" rx="3" fill="#3B6D11" transform="rotate(20,58,41)"/></svg>`
 };
 const PINFO={
-  guardian:{name:'The Guardian',sub:'Risk Control Master',c:'#26a69a',bg:'#1a3a2a'},
-  bull:{name:'The Raging Bull',sub:'Aggressive Long Player',c:'#ef5350',bg:'#2d1a1a'},
-  bear:{name:'The Calm Bear',sub:'Contrarian Short Seller',c:'#7b6fd4',bg:'#1e1a3a'},
-  hunter:{name:'The News Hunter',sub:'News-Driven Trader',c:'#f59f00',bg:'#2a1f00'},
-  monk:{name:'The Zen Observer',sub:'Patient Watcher',c:'#787b86',bg:'#2a2e39'},
-  octopus:{name:'The Diversifier',sub:'Balanced Multi-Holder',c:'#2962ff',bg:'#1e3a5f'},
-  flash:{name:'The Scalper',sub:'High-Frequency Trader',c:'#D4537E',bg:'#2d1a2a'},
-  dualist:{name:'The Dualist',sub:'Long & Short Strategist',c:'#26a69a',bg:'#1a2a10'}
+  guardian:{name:'稳健守护者',sub:'风险控制高手',c:'#26a69a',bg:'#1a3a2a'},
+  bull:{name:'激进多头牛',sub:'买入型冒险家',c:'#ef5350',bg:'#2d1a1a'},
+  bear:{name:'冷静空头熊',sub:'做空型逆向者',c:'#7b6fd4',bg:'#1e1a3a'},
+  hunter:{name:'消息猎手',sub:'新闻驱动型',c:'#f59f00',bg:'#2a1f00'},
+  monk:{name:'佛系观察者',sub:'谨慎观望型',c:'#787b86',bg:'#2a2e39'},
+  octopus:{name:'章鱼分散王',sub:'均衡多元型',c:'#2962ff',bg:'#1e3a5f'},
+  flash:{name:'闪电短线侠',sub:'高频交易型',c:'#D4537E',bg:'#2d1a2a'},
+  dualist:{name:'多空双剑客',sub:'多空双向型',c:'#26a69a',bg:'#1a2a10'}
 };
 
-function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
+function fmt(n){return'¥'+Math.round(n).toLocaleString('zh-CN')}
 function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%'}
 
 function enterSim(){
@@ -498,7 +498,7 @@ function initG(){
   G={day:1,cash:100000,init:100000,
     stocks:STOCKS.map(s=>({...s,price:s.base,candles:[genOHLC(s.base,s.base)],history:[s.base]})),
     longs:{},shorts:{},sltp:{},
-    tradeLog:[],rawLog:[{msg:'Game started! Capital: $100,000. Stop-loss/take-profit and position scoring enabled.',type:''}],
+    tradeLog:[],rawLog:[{msg:'游戏开始！初始资金 ¥100,000。支持止损止盈与仓位评分。',type:''}],
     slT:0,tpT:0};
 }
 function genOHLC(o,c){
@@ -539,11 +539,11 @@ function checkSLTP(){
     if(rules.sl&&s.price<=rules.sl){
       const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.slT++;
       G.tradeLog.push({day:G.day,action:'sl',code,qty,price:s.price,news:false});
-      addLog(`🛡 Day ${G.day} [STOP-LOSS] ${s.name} fell to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'warn');
+      addLog(`🛡 第${G.day}天 【止损触发】${s.name} 跌至¥${s.price.toFixed(2)}，自动卖出×${qty}股，回收${fmt(v)}`,'warn');
     }else if(rules.tp&&s.price>=rules.tp){
       const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.tpT++;
       G.tradeLog.push({day:G.day,action:'tp',code,qty,price:s.price,news:false});
-      addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} rose to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'ok');
+      addLog(`🎯 第${G.day}天 【止盈触发】${s.name} 涨至¥${s.price.toFixed(2)}，自动卖出×${qty}股，收益${fmt(v)}`,'ok');
     }
   });
 }
@@ -578,10 +578,10 @@ function renderScores(){
   };
   set('sc-div',div,'sb-div');set('sc-risk',risk,'sb-risk');set('sc-disc',disc,'sb-disc');
   const tips=[];
-  if(div<60)tips.push('Portfolio too concentrated. Spread across 3+ stocks, no single position above 40%.');
-  if(risk<60)tips.push('Risk control weak. Set stop-loss on each long position to protect capital.');
-  if(disc<60)tips.push('Trading too frequently. Plan each trade before you execute.');
-  document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ Great position management! Diversify, set stop-losses, trade with discipline.';
+  if(div<60)tips.push('持仓过于集中，建议分散到3只以上，单只不超过40%。');
+  if(risk<60)tips.push('风险控制较弱，建议为每笔多仓设置止损价。');
+  if(disc<60)tips.push('交易过于频繁，建议每次入场前制定计划。');
+  document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ 仓位管理良好！保持分散、止损、克制操作。';
 }
 
 function resizeKline(){
@@ -611,7 +611,7 @@ function drawKline(code){
     ctx.strokeStyle='#1e222d';ctx.lineWidth=0.5;
     ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
     ctx.fillStyle='#4c505c';ctx.font='10px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillText('$'+(maxP-r*range).toFixed(1),pL-4,y);
+    ctx.fillText('¥'+(maxP-r*range).toFixed(1),pL-4,y);
   });
   candles.forEach((c,i)=>{
     const x=toX(i),up=c.c>=c.o,col=up?'#26a69a':'#ef5350';
@@ -631,7 +631,7 @@ function drawKline(code){
       ctx.textBaseline=above?'bottom':'top';
       ctx.fillText(lbl+price.toFixed(1),pL+2,above?y-2:y+2);
     };
-    dl(rules.sl,'#ef5350','SL ',false);dl(rules.tp,'#26a69a','TP ',true);
+    dl(rules.sl,'#ef5350','止损',false);dl(rules.tp,'#26a69a','止盈',true);
   }
   ctx.font='10px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle='#4c505c';
   const step=Math.max(1,Math.ceil(n/6));
@@ -673,7 +673,7 @@ function setMode(m){
     ml.className='mode-btn mode-long';ms.className='mode-btn mode-short-off';
     document.getElementById('short-tip').style.display='none';
     document.getElementById('sl-tp-sec').style.display='block';
-    document.getElementById('trade-btns').innerHTML='<button class="btn-buy" onclick="doBuy()">Buy (Long)</button><button class="btn-sell" onclick="doSell()">Sell (Close Long)</button>';
+    document.getElementById('trade-btns').innerHTML='<button class="btn-buy" onclick="doBuy()">买入（做多）</button><button class="btn-sell" onclick="doSell()">卖出（平多）</button>';
   }else{
     ml.className='mode-btn mode-short-off';ms.className='mode-btn mode-short-on';
     document.getElementById('short-tip').style.display='block';
@@ -694,50 +694,50 @@ function saveSLTP(code){
 function doBuy(){
   if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  if(!qty){addLog('❌ Invalid quantity.','er');return;}
+  if(!qty){addLog('❌ 数量无效。','er');return;}
   const cost=s.price*qty;
   if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}，余额 ${fmt(G.cash)}.`,'er');renderLog();return;}
   G.cash-=cost;G.longs[selCode]=(G.longs[selCode]||0)+qty;
   saveSLTP(selCode);
   G.tradeLog.push({day:G.day,action:'buy',code:selCode,qty,price:s.price,news:isNews()});
   const r=G.sltp[selCode];
-  addLog(`✅ Day ${G.day} — Bought ${s.name} ×${qty} @$${s.price.toFixed(2)}. ${fmt(cost)}${r&&r.sl?' SL:$'+r.sl:''}${r&&r.tp?' TP:$'+r.tp:''}`,'ok');
+  addLog(`✅ 第${G.day}天 买入 ${s.name}×${qty}股 @¥${s.price.toFixed(2)}，花费${fmt(cost)}${r&&r.sl?' 止损¥'+r.sl:''}${r&&r.tp?' 止盈¥'+r.tp:''}`,'ok');
   renderAll();
 }
 function doSell(){
   if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   const h=G.longs[selCode]||0;
-  if(!qty||qty>h){addLog(`❌ Long position: ${h} shares. Cannot sell ${qty}.`,'er');renderLog();return;}
+  if(!qty||qty>h){addLog(`❌ 多仓持股${h}股，无法卖出${qty}股。`,'er');renderLog();return;}
   const v=s.price*qty;G.cash+=v;G.longs[selCode]-=qty;
   if(!G.longs[selCode]){delete G.longs[selCode];delete G.sltp[selCode];}
   G.tradeLog.push({day:G.day,action:'sell',code:selCode,qty,price:s.price,news:isNews()});
-  addLog(`✅ Day ${G.day} — Sold ${s.name} ×${qty} @$${s.price.toFixed(2)}. ${fmt(v)}`,'ok');
+  addLog(`✅ 第${G.day}天 卖出 ${s.name}×${qty}股 @¥${s.price.toFixed(2)}，获得${fmt(v)}`,'ok');
   renderAll();
 }
 function doShort(){
   if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
-  if(!qty){addLog('❌ Invalid quantity.','er');return;}
+  if(!qty){addLog('❌ 数量无效。','er');return;}
   const m=s.price*qty*0.5;
-  if(m>G.cash){addLog(`❌ Insufficient margin. Need ${fmt(m)}.`,'er');renderLog();return;}
-  if(G.shorts[selCode]){addLog('❌ Close existing short first.','er');renderLog();return;}
+  if(m>G.cash){addLog(`❌ 保证金不足！需${fmt(m)}，余额${fmt(G.cash)}。`,'er');renderLog();return;}
+  if(G.shorts[selCode]){addLog('❌ 请先平掉现有空仓。','er');renderLog();return;}
   G.cash-=m;G.cash+=s.price*qty;G.shorts[selCode]={qty,entryPrice:s.price,margin:m};
   G.tradeLog.push({day:G.day,action:'short',code:selCode,qty,price:s.price,news:isNews()});
-  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @$${s.price.toFixed(2)}. Margin: ${fmt(m)}`,'ok');
+  addLog(`✅ 第${G.day}天 做空 ${s.name}×${qty}股 @¥${s.price.toFixed(2)}，保证金${fmt(m)}`,'ok');
   renderAll();
 }
 function doCover(){
   if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),pos=G.shorts[selCode];
-  if(!pos){addLog('❌ No short to cover.','er');renderLog();return;}
+  if(!pos){addLog('❌ 无空仓可平。','er');renderLog();return;}
   const qty=parseInt(document.getElementById('qty').value)||0;
-  if(!qty||qty>pos.qty){addLog(`❌ Short position: ${pos.qty} shares.`,'er');renderLog();return;}
+  if(!qty||qty>pos.qty){addLog(`❌ 空仓${pos.qty}股，无法平${qty}股。`,'er');renderLog();return;}
   const pnl=(pos.entryPrice-s.price)*qty,mr=pos.margin*(qty/pos.qty);
   G.cash-=s.price*qty;G.cash+=mr;
   if(qty===pos.qty)delete G.shorts[selCode];else{G.shorts[selCode].qty-=qty;G.shorts[selCode].margin-=mr;}
   G.tradeLog.push({day:G.day,action:'cover',code:selCode,qty,price:s.price,pnl,news:isNews()});
-  addLog(`${pnl>=0?'✅':'❌'} Day ${G.day} — Covered ${s.name} ×${qty} @$${s.price.toFixed(2)}. P&L: ${pnl>=0?'+':''}${fmt(pnl)}`,pnl>=0?'ok':'er');
+  addLog(`${pnl>=0?'✅':'❌'} 第${G.day}天 平空 ${s.name}×${qty}股 @¥${s.price.toFixed(2)}，盈亏${pnl>=0?'+':''}${fmt(pnl)}`,pnl>=0?'ok':'er');
   renderAll();
 }
 
@@ -791,11 +791,11 @@ function buildPrompt(){
   const co=G.tradeLog.filter(t=>t.action==='cover').length;
   const nt=G.tradeLog.filter(t=>t.news).length;
   const stk=new Set(G.tradeLog.map(t=>t.code)).size;
-  return`Trading coach debrief. Output ONLY JSON, no other text.
+  return`交易培训师复盘。只输出JSON，不要任何其他文字。
 Data: Start $100k Final ${fmt(total)} P&L ${pnl>=0?'+':''}${fmt(pnl)}(${pct}%)
 Trades:${G.tradeLog.length}(B:${bc}S:${sl2}Sh:${sh}C:${co}) SL:${G.slT} TP:${G.tpT} news:${nt}/11 top:${fav?fav[0]+'x'+fav[1]:'none'} stocks:${stk}
 Scores:Div${sc.div} Risk${sc.risk} Disc${sc.disc}
-JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for dark bg","styleSummary":"3 sentences on style","pros":["specific strength 1 with data","strength 2","strength 3"],"cons":["specific improvement 1 with data","improvement 2","improvement 3"],"suggestions":[{"title":"t1","action":"a1"},{"title":"t2","action":"a2"},{"title":"t3","action":"a3"}],"closing":"one encouraging sentence","scoreComment":"2 sentences on scores","tradeCount":"${G.tradeLog.length} trades","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%","divScore":${sc.div},"riskScore":${sc.risk},"discScore":${sc.disc}}`;
+JSON:{"styleTag":"2-3词风格标签","styleColor":"#hex","styleBg":"对应深色背景hex","styleSummary":"3句描述整体交易风格和特点","pros":["具体优点1含数据","优点2","优点3"],"cons":["具体改进点1含数据","改进2","改进3"],"suggestions":[{"title":"t1","action":"a1"},{"title":"t2","action":"a2"},{"title":"t3","action":"a3"}],"closing":"一句鼓励性总评","scoreComment":"2句针对三项评分的综合点评","tradeCount":"${G.tradeLog.length} trades","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%","divScore":${sc.div},"riskScore":${sc.risk},"discScore":${sc.disc}}`;
 }
 
 async function generateReport(){
@@ -812,7 +812,7 @@ async function generateReport(){
     renderReport(JSON.parse(m[0]));
     document.getElementById('dl-btn').style.display='';
   }catch(e){
-    document.getElementById('report-content').innerHTML=`<div style="padding:20px;color:#ef5350;font-size:12px;line-height:1.8">Failed: ${e.message}</div>`;
+    document.getElementById('report-content').innerHTML=`<div style="padding:20px;color:#ef5350;font-size:12px;line-height:1.8">报告生成失败：${e.message}</div>`;
   }
 }
 
@@ -826,14 +826,14 @@ function renderReport(r){
   const freq={};G.tradeLog.forEach(t=>{freq[t.code]=(freq[t.code]||0)+1;});
   const fav=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
   const now=new Date();
-  const dateStr=now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const dateStr=now.toLocaleString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
   const pk=getPersonaKey(),pi=PINFO[pk];
   const tc=r.styleColor||'#26a69a',tb=r.styleBg||'#1a3a2a';
   document.getElementById('report-content').innerHTML=`
   <div id="report-card">
     <div class="rc-hdr">
       <div class="rc-logo">📈</div>
-      <div><div class="rc-title">Trading Simulation Report · Advanced</div><div class="rc-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
+      <div><div class="rc-title">交易模拟复盘报告 · 进阶版</div><div class="rc-sub">20天模拟交易 · ${dateStr} · Developed by Elena Zhang</div></div>
     </div>
     <div class="rc-persona">
       <div style="background:${pi.bg};border-radius:8px;padding:6px;flex-shrink:0">${PSVG[pk]}</div>
@@ -843,51 +843,67 @@ function renderReport(r){
       </div>
     </div>
     <div class="rc-stats">
-      <div class="rc-stat"><div class="rc-stat-v">${r.finalAsset}</div><div class="rc-stat-l">Final Assets</div></div>
-      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlStr}</div><div class="rc-stat-l">Total P&L</div></div>
-      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlPct}</div><div class="rc-stat-l">Return</div></div>
-      <div class="rc-stat"><div class="rc-stat-v">${r.tradeCount}</div><div class="rc-stat-l">Trades</div></div>
+      <div class="rc-stat"><div class="rc-stat-v">${r.finalAsset}</div><div class="rc-stat-l">最终资产</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlStr}</div><div class="rc-stat-l">总盈亏</div></div>
+      <div class="rc-stat"><div class="rc-stat-v ${pnl>=0?'up':'dn'}">${r.pnlPct}</div><div class="rc-stat-l">收益率</div></div>
+      <div class="rc-stat"><div class="rc-stat-v">${r.tradeCount}</div><div class="rc-stat-l">交易次数</div></div>
     </div>
     <div class="rc-summary">${r.styleSummary}</div>
     <div class="rc-scores">
-      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.divScore>=80?'#26a69a':r.divScore>=60?'#f59f00':'#ef5350'}">${r.divScore}pts</div><div class="rc-score-l">Diversification</div>${sBar(r.divScore)}</div>
-      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.riskScore>=80?'#26a69a':r.riskScore>=60?'#f59f00':'#ef5350'}">${r.riskScore}pts</div><div class="rc-score-l">Risk Control</div>${sBar(r.riskScore)}</div>
-      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.discScore>=80?'#26a69a':r.discScore>=60?'#f59f00':'#ef5350'}">${r.discScore}pts</div><div class="rc-score-l">Discipline</div>${sBar(r.discScore)}</div>
+      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.divScore>=80?'#26a69a':r.divScore>=60?'#f59f00':'#ef5350'}">${r.divScore}分</div><div class="rc-score-l">分散度</div>${sBar(r.divScore)}</div>
+      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.riskScore>=80?'#26a69a':r.riskScore>=60?'#f59f00':'#ef5350'}">${r.riskScore}分</div><div class="rc-score-l">风险控制</div>${sBar(r.riskScore)}</div>
+      <div class="rc-score-box"><div class="rc-score-v" style="color:${r.discScore>=80?'#26a69a':r.discScore>=60?'#f59f00':'#ef5350'}">${r.discScore}分</div><div class="rc-score-l">交易纪律</div>${sBar(r.discScore)}</div>
     </div>
     <div style="font-size:11px;line-height:1.7;color:var(--tv-text2);padding:8px 10px;background:var(--tv-bg3);border-radius:4px;margin-bottom:12px">
-      <div style="margin-bottom:4px">Diversification (${r.divScore}pts): Stocks held and position concentration. 3+ stocks, none above 40% scores highest.</div>
-      <div style="margin-bottom:4px">风险控制（${r.riskScore}pts): Stop-loss rate on longs and short margin usage.</div>
-      <div style="margin-bottom:4px">交易纪律（${r.discScore}pts): Trade frequency and SL/TP execution. Fewer planned trades score highest.</div>
-      ${r.scoreComment?`<div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--tv-border)"><strong style="color:var(--tv-text)">AI Comment: </strong>${r.scoreComment}</div>`:''}
+      <div style="margin-bottom:4px">分散度（${r.divScore}分）：持仓股票数量及集中度。持有3只以上且单只不超过40%可获高分。</div>
+      <div style="margin-bottom:4px">风险控制（${r.riskScore}分）：多仓止损设置比例及空仓保证金占比。</div>
+      <div style="margin-bottom:4px">交易纪律（${r.discScore}分）：交易频率及止损止盈触发情况。操作克制可获高分。</div>
+      ${r.scoreComment?`<div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--tv-border)"><strong style="color:var(--tv-text)">AI点评：</strong>${r.scoreComment}</div>`:''}
     </div>
     <div class="rc-grid">
-      <div class="rc-box"><div class="rc-box-t">✅ Strengths</div><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
-      <div class="rc-box"><div class="rc-box-t">⚠️ Improve</div><ul>${r.cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
+      <div class="rc-box"><div class="rc-box-t">✅ 三大优点</div><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+      <div class="rc-box"><div class="rc-box-t">⚠️ 待改进点</div><ul>${r.cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
     </div>
     <div class="rc-sugs">
-      <div style="font-size:10px;font-weight:500;color:var(--tv-text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">📚 Learning Plan</div>
+      <div style="font-size:10px;font-weight:500;color:var(--tv-text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">📚 个性化学习建议</div>
       ${r.suggestions.map((s,i)=>`<div class="rc-sug"><div class="rc-sug-n">${i+1}</div><div><div class="rc-sug-t">${s.title}</div><div class="rc-sug-a">${s.action}</div></div></div>`).join('')}
     </div>
     <div class="rc-closing">${r.closing}</div>
     <div class="rc-footer">
-      <span>Top: ${fav?fav[0]+'(×'+fav[1]+')':'—'} · SL:${G.slT} TP:${G.tpT}</span>
+      <span>最常交易：${fav?fav[0]+'(×'+fav[1]+')':'—'} · 止损:${G.slT} 止盈:${G.tpT}</span>
       <span>Powered by DeepSeek AI</span>
     </div>
-    <div class="rc-disc">AI-generated from fictional simulation data. Not financial advice. No real funds. Consult a licensed advisor for real investment decisions. Developed by Elena Zhang · Educational use only.</div>
+    <div class="rc-disc">本报告由AI根据虚构模拟数据生成，不构成任何投资建议。所有数据为模拟数值，不涉及真实资金。进行真实投资前请咨询持牌金融顾问。Developed by Elena Zhang · 仅供教育用途</div>
   </div>`;
 }
 
 function closeReport(){document.getElementById('rpt-overlay').className='rpt-overlay';}
 
 async function downloadReport(){
-  const card=document.getElementById('report-card');if(!card)return;
+  const card=document.getElementById('report-card');
+  if(!card){alert('请先生成报告再下载');return;}
   const btn=document.getElementById('dl-btn');
-  btn.textContent='Generating…';btn.disabled=true;
+  const origText=btn.textContent;
+  btn.textContent='生成中…';btn.disabled=true;
   try{
-    const canvas=await html2canvas(card,{scale:2,backgroundColor:'#1e222d',useCORS:true,logging:false});
-    const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='trading-report.png';a.click();
-  }catch(e){alert('Download failed: '+e.message);}
-  btn.textContent='⬇ Download';btn.disabled=false;
+    // Temporarily move card to body for html2canvas
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:660px;background:#1e222d;z-index:-1';
+    wrapper.appendChild(card.cloneNode(true));
+    document.body.appendChild(wrapper);
+    const canvas=await html2canvas(wrapper.firstChild,{
+      scale:2,backgroundColor:'#1e222d',useCORS:true,logging:false,
+      width:660,windowWidth:660
+    });
+    document.body.removeChild(wrapper);
+    const link=document.createElement('a');
+    link.href=canvas.toDataURL('image/png');
+    link.download='交易风格报告.png';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(()=>document.body.removeChild(link),100);
+  }catch(e){alert('下载失败：'+e.message);}
+  btn.textContent=origText;btn.disabled=false;
 }
 
 document.getElementById('next-btn').onclick=()=>{
@@ -905,17 +921,17 @@ document.getElementById('next-btn').onclick=()=>{
     s.candles.push(genOHLC(prev,np));s.price=np;s.history.push(np);
   });
   checkSLTP();
-  if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
+  if(G.day===20)document.getElementById('next-btn').textContent='生成交易报告 →';
   renderAll();
 };
 
 document.getElementById('reset-btn').onclick=()=>{
   document.getElementById('news-b').className='news-bar';
-  document.getElementById('day-lbl').textContent='Day 1';
-  document.getElementById('next-btn').textContent='Next Day →';
-  document.getElementById('c-title').textContent='Select a stock to view chart';
+  document.getElementById('day-lbl').textContent='第 1 天';
+  document.getElementById('next-btn').textContent='下一天 →';
+  document.getElementById('c-title').textContent='点击股票卡片查看K线图';
   document.getElementById('c-info').textContent='';
-  document.getElementById('trade-stock-label').textContent='Select a stock';
+  document.getElementById('trade-stock-label').textContent='请先选择股票';
   document.getElementById('tp-price').textContent='—';
   document.getElementById('tp-held').textContent='';
   document.getElementById('tp-cost').textContent='';
