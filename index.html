@@ -801,7 +801,7 @@ JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for
 async function generateReport(){
   document.getElementById('rpt-overlay').className='rpt-overlay show';
   document.getElementById('dl-btn').style.display='none';
-  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek 正在分析您的交易风格，请稍候…</div>';
+  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is analyzing your trading style…</div>';
   try{
     const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
     const data=await resp.json();
@@ -883,26 +883,31 @@ async function downloadReport(){
   const card=document.getElementById('report-card');
   if(!card){alert('Please generate the report first');return;}
   const btn=document.getElementById('dl-btn');
-  const origText=btn.textContent;
   btn.textContent='Generating…';btn.disabled=true;
   try{
-    const wrapper=document.createElement('div');
-    wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:660px;background:#1e222d;z-index:-1';
-    wrapper.appendChild(card.cloneNode(true));
-    document.body.appendChild(wrapper);
-    const canvas=await html2canvas(wrapper.firstChild,{
-      scale:2,backgroundColor:'#1e222d',useCORS:true,logging:false,
-      width:660,windowWidth:660
+    const canvas=await html2canvas(card,{
+      scale:2,
+      backgroundColor:'#1e222d',
+      useCORS:true,
+      logging:false,
+      scrollX:0,
+      scrollY:-window.scrollY,
+      windowWidth:document.documentElement.scrollWidth,
+      windowHeight:document.documentElement.scrollHeight,
+      onclone:(doc)=>{
+        const el=doc.getElementById('report-card');
+        if(el){el.style.width='640px';el.style.maxWidth='640px';}
+      }
     });
-    document.body.removeChild(wrapper);
     const link=document.createElement('a');
     link.href=canvas.toDataURL('image/png');
     link.download='trading-report.png';
+    link.style.display='none';
     document.body.appendChild(link);
     link.click();
-    setTimeout(()=>document.body.removeChild(link),100);
+    setTimeout(()=>{if(link.parentNode)link.parentNode.removeChild(link);},200);
   }catch(e){alert('Download failed: '+e.message);}
-  btn.textContent=origText;btn.disabled=false;
+  btn.textContent='⬇ Download';btn.disabled=false;
 }
 
 document.getElementById('next-btn').onclick=()=>{
