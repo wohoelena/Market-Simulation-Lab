@@ -63,12 +63,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .main{display:grid;grid-template-columns:1fr 260px;flex:1;overflow:hidden;min-height:0}
 
 /* Chart panel */
-.chart-panel{display:flex;flex-direction:column;border-right:0.5px solid var(--tv-border);overflow:hidden;min-height:0}
+.chart-panel{display:flex;flex-direction:column;border-right:0.5px solid var(--tv-border);overflow:hidden}
 .chart-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--tv-border);flex-shrink:0}
 .chart-title{font-size:13px;font-weight:500;color:var(--tv-text)}
 .chart-ohlc{font-size:11px;color:var(--tv-text2)}
 .chart-ohlc.up{color:var(--tv-green)}.chart-ohlc.dn{color:var(--tv-red)}
-#kline-wrap{flex:1;min-height:180px;padding:8px}
+#kline-wrap{flex:1;min-height:0;padding:8px}
 #kline{display:block;width:100%;height:100%}
 
 /* Score panel inside chart -->  */
@@ -183,17 +183,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .rc-disc{margin-top:8px;padding:6px 10px;background:var(--tv-bg3);border-radius:4px;font-size:9px;color:var(--tv-text2);line-height:1.5;text-align:center}
 
 .footer-bar{border-top:0.5px solid var(--tv-border);padding:5px 14px;font-size:10px;color:var(--tv-text2);display:flex;justify-content:space-between;flex-shrink:0}
-
-  .stats-row{grid-template-columns:repeat(2,1fr)}
-  .stat:nth-child(5){display:none}
-  #kline-wrap{height:160px}
-}
-
 /* ── Mobile: full reflow ── */
-  .sk-pr{font-size:13px}
-  #kline-wrap{height:180px}
-  .hdr-logo span:first-child{font-size:13px}
-}
 
 
 @media(max-width:768px){
@@ -377,7 +367,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
       <!-- Short tip -->
       <div class="short-tip" id="short-tip" style="margin:0;border-radius:0;padding:8px 12px;border-bottom:0.5px solid var(--tv-border)">
-        <strong style="color:var(--tv-red)">Short selling:</strong> Borrow shares and sell them, then buy back at a lower price to profit. Margin = price × qty × 50%. You lose if price rises.
+        <strong style="color:var(--tv-red)">Short selling:</strong> Borrow shares and sell them, then buy back lower to profit. Margin = price × qty × 50%. You lose if price rises.
       </div>
 
       <!-- Price info -->
@@ -423,7 +413,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <!-- Positions -->
       <div class="trade-sec" style="flex:1">
         <div class="trade-sec-title">Open Positions</div>
-        <div id="hld-list"><div style="font-size:10px;color:var(--tv-text2)">No open positions</div></div>
+        <div id="hld-list"><div style="font-size:10px;color:var(--tv-text2)">暂无持仓</div></div>
       </div>
 
     </div>
@@ -549,11 +539,11 @@ function checkSLTP(){
     if(rules.sl&&s.price<=rules.sl){
       const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.slT++;
       G.tradeLog.push({day:G.day,action:'sl',code,qty,price:s.price,news:false});
-      addLog(`🛡 Day ${G.day} [STOP-LOSS] ${s.name} → $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'warn');
+      addLog(`🛡 Day ${G.day} [STOP-LOSS] ${s.name} fell to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'warn');
     }else if(rules.tp&&s.price>=rules.tp){
       const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.tpT++;
       G.tradeLog.push({day:G.day,action:'tp',code,qty,price:s.price,news:false});
-      addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} → $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'ok');
+      addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} rose to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'ok');
     }
   });
 }
@@ -588,18 +578,23 @@ function renderScores(){
   };
   set('sc-div',div,'sb-div');set('sc-risk',risk,'sb-risk');set('sc-disc',disc,'sb-disc');
   const tips=[];
-  if(div<60)tips.push('Spread across 3+ stocks, no single position above 40%.');
-  if(risk<60)tips.push('Set stop-loss on each long position to protect capital.');
-  if(disc<60)tips.push('Reduce trade frequency — plan before you execute.');
-  document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ Great position management!';
+  if(div<60)tips.push('Portfolio too concentrated. Spread across 3+ stocks, no single position above 40%.');
+  if(risk<60)tips.push('Risk control weak. Set stop-loss on each long position to protect capital.');
+  if(disc<60)tips.push('Trading too frequently. Plan each trade before you execute.');
+  document.getElementById('score-tip').textContent=tips.length?tips.join(' | '):'✅ Great position management! Diversify, set stop-losses, trade with discipline.';
+}
+
+function resizeKline(){
+  const wrap=document.getElementById('kline-wrap');
+  const canv=document.getElementById('kline');
+  canv.width=wrap.clientWidth;
+  canv.height=wrap.clientHeight;
 }
 
 function drawKline(code){
   const s=G.stocks.find(x=>x.code===code);
   const canv=document.getElementById('kline');
-  const wrap=document.getElementById('kline-wrap');
-  canv.width=wrap.clientWidth||360;
-  canv.height=wrap.clientHeight||200;
+  resizeKline();
   const W=canv.width,H=canv.height;
   const ctx=canv.getContext('2d');ctx.clearRect(0,0,W,H);
   const candles=s.candles,n=candles.length;if(!n||H<40)return;
@@ -653,7 +648,7 @@ function selectStock(code){
   selCode=code;
   const s=G.stocks.find(x=>x.code===code);
   document.getElementById('trade-stock-label').textContent=s.name+' ('+s.code+')';
-  document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / share';
+  document.getElementById('tp-price').textContent='$'+s.price.toFixed(2)+' / 股';
   const lq=G.longs[code]||0,sp=G.shorts[code];
   let h='';if(lq>0)h+='Long: '+lq+' shares  ';if(sp)h+='Short: '+sp.qty+' shares';
   document.getElementById('tp-held').textContent=h;
@@ -683,7 +678,7 @@ function setMode(m){
     ml.className='mode-btn mode-short-off';ms.className='mode-btn mode-short-on';
     document.getElementById('short-tip').style.display='block';
     document.getElementById('sl-tp-sec').style.display='none';
-    document.getElementById('trade-btns').innerHTML='<button class="btn-sell" onclick="doShort()">Sell Short (Open)</button><button class="btn-cover" onclick="doCover()">Buy to Cover</button>';
+    document.getElementById('trade-btns').innerHTML='<button class="btn-sell" onclick="doShort()">卖空（建仓）</button><button class="btn-cover" onclick="doCover()">买入（平空）</button>';
   }
   updateCost();
 }
@@ -697,11 +692,11 @@ function saveSLTP(code){
 }
 
 function doBuy(){
-  if(!selCode){addLog('❌ Select a stock first.','er');return;}
+  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   if(!qty){addLog('❌ Invalid quantity.','er');return;}
   const cost=s.price*qty;
-  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}, have ${fmt(G.cash)}.`,'er');renderLog();return;}
+  if(cost>G.cash){addLog(`❌ Insufficient cash. Need ${fmt(cost)}，余额 ${fmt(G.cash)}.`,'er');renderLog();return;}
   G.cash-=cost;G.longs[selCode]=(G.longs[selCode]||0)+qty;
   saveSLTP(selCode);
   G.tradeLog.push({day:G.day,action:'buy',code:selCode,qty,price:s.price,news:isNews()});
@@ -710,10 +705,10 @@ function doBuy(){
   renderAll();
 }
 function doSell(){
-  if(!selCode){addLog('❌ Select a stock first.','er');return;}
+  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   const h=G.longs[selCode]||0;
-  if(!qty||qty>h){addLog(`❌ Long: ${h} shares. Cannot sell ${qty}.`,'er');renderLog();return;}
+  if(!qty||qty>h){addLog(`❌ Long position: ${h} shares. Cannot sell ${qty}.`,'er');renderLog();return;}
   const v=s.price*qty;G.cash+=v;G.longs[selCode]-=qty;
   if(!G.longs[selCode]){delete G.longs[selCode];delete G.sltp[selCode];}
   G.tradeLog.push({day:G.day,action:'sell',code:selCode,qty,price:s.price,news:isNews()});
@@ -721,7 +716,7 @@ function doSell(){
   renderAll();
 }
 function doShort(){
-  if(!selCode){addLog('❌ Select a stock first.','er');return;}
+  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),qty=parseInt(document.getElementById('qty').value)||0;
   if(!qty){addLog('❌ Invalid quantity.','er');return;}
   const m=s.price*qty*0.5;
@@ -733,11 +728,11 @@ function doShort(){
   renderAll();
 }
 function doCover(){
-  if(!selCode){addLog('❌ Select a stock first.','er');return;}
+  if(!selCode){addLog('❌ 请先选择股票 first.','er');return;}
   const s=G.stocks.find(x=>x.code===selCode),pos=G.shorts[selCode];
   if(!pos){addLog('❌ No short to cover.','er');renderLog();return;}
   const qty=parseInt(document.getElementById('qty').value)||0;
-  if(!qty||qty>pos.qty){addLog(`❌ Short: ${pos.qty} shares.`,'er');renderLog();return;}
+  if(!qty||qty>pos.qty){addLog(`❌ Short position: ${pos.qty} shares.`,'er');renderLog();return;}
   const pnl=(pos.entryPrice-s.price)*qty,mr=pos.margin*(qty/pos.qty);
   G.cash-=s.price*qty;G.cash+=mr;
   if(qty===pos.qty)delete G.shorts[selCode];else{G.shorts[selCode].qty-=qty;G.shorts[selCode].margin-=mr;}
@@ -777,7 +772,7 @@ function renderHoldings(){
     const s=G.stocks.find(x=>x.code===c),pnl=(pos.entryPrice-s.price)*pos.qty;
     rows.push(`<div class="pos-row"><div><div class="pos-name">${s.name}<span class="tag" style="background:#2d1a1a;color:#ef5350;margin-left:4px">S</span></div><div class="pos-detail">${pos.qty} @ $${pos.entryPrice.toFixed(2)}</div></div><div class="pos-pnl" style="color:${pnl>=0?'#26a69a':'#ef5350'}">${pnl>=0?'+':''}${fmt(pnl)}</div></div>`);
   });
-  el.innerHTML=rows.length?rows.join(''):'<div style="font-size:10px;color:var(--tv-text2)">No open positions</div>';
+  el.innerHTML=rows.length?rows.join(''):'<div style="font-size:10px;color:var(--tv-text2)">暂无持仓</div>';
 }
 function renderLog(){
   document.getElementById('log-el').innerHTML=G.rawLog.slice(0,20).map(m=>`<div class="le ${m.type||''}">${m.msg||m}</div>`).join('');
@@ -800,13 +795,13 @@ function buildPrompt(){
 Data: Start $100k Final ${fmt(total)} P&L ${pnl>=0?'+':''}${fmt(pnl)}(${pct}%)
 Trades:${G.tradeLog.length}(B:${bc}S:${sl2}Sh:${sh}C:${co}) SL:${G.slT} TP:${G.tpT} news:${nt}/11 top:${fav?fav[0]+'x'+fav[1]:'none'} stocks:${stk}
 Scores:Div${sc.div} Risk${sc.risk} Disc${sc.disc}
-JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for dark bg","styleSummary":"3 sentences on style","pros":["p1","p2","p3"],"cons":["c1","c2","c3"],"suggestions":[{"title":"t1","action":"a1"},{"title":"t2","action":"a2"},{"title":"t3","action":"a3"}],"closing":"one sentence","scoreComment":"2 sentences on scores","tradeCount":"${G.tradeLog.length} trades","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%","divScore":${sc.div},"riskScore":${sc.risk},"discScore":${sc.disc}}`;
+JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for dark bg","styleSummary":"3 sentences on style","pros":["specific strength 1 with data","strength 2","strength 3"],"cons":["specific improvement 1 with data","improvement 2","improvement 3"],"suggestions":[{"title":"t1","action":"a1"},{"title":"t2","action":"a2"},{"title":"t3","action":"a3"}],"closing":"one encouraging sentence","scoreComment":"2 sentences on scores","tradeCount":"${G.tradeLog.length} trades","finalAsset":"${fmt(total)}","pnlStr":"${(pnl>=0?'+':'')+fmt(pnl)}","pnlPct":"${(pnl>=0?'+':'')+pct}%","divScore":${sc.div},"riskScore":${sc.risk},"discScore":${sc.disc}}`;
 }
 
 async function generateReport(){
   document.getElementById('rpt-overlay').className='rpt-overlay show';
   document.getElementById('dl-btn').style.display='none';
-  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is analyzing your trading style…</div>';
+  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek 正在分析您的交易风格，请稍候…</div>';
   try{
     const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
     const data=await resp.json();
@@ -861,9 +856,9 @@ function renderReport(r){
     </div>
     <div style="font-size:11px;line-height:1.7;color:var(--tv-text2);padding:8px 10px;background:var(--tv-bg3);border-radius:4px;margin-bottom:12px">
       <div style="margin-bottom:4px">Diversification (${r.divScore}pts): Stocks held and position concentration. 3+ stocks, none above 40% scores highest.</div>
-      <div style="margin-bottom:4px">Risk Control (${r.riskScore}pts): Stop-loss rate on longs and short margin usage.</div>
-      <div style="margin-bottom:4px">Discipline (${r.discScore}pts): Trade frequency and SL/TP execution. Fewer planned trades score highest.</div>
-      ${r.scoreComment?`<div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--tv-border)"><strong style="color:var(--tv-text)">AI: </strong>${r.scoreComment}</div>`:''}
+      <div style="margin-bottom:4px">风险控制（${r.riskScore}pts): Stop-loss rate on longs and short margin usage.</div>
+      <div style="margin-bottom:4px">交易纪律（${r.discScore}pts): Trade frequency and SL/TP execution. Fewer planned trades score highest.</div>
+      ${r.scoreComment?`<div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--tv-border)"><strong style="color:var(--tv-text)">AI Comment: </strong>${r.scoreComment}</div>`:''}
     </div>
     <div class="rc-grid">
       <div class="rc-box"><div class="rc-box-t">✅ Strengths</div><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
@@ -898,7 +893,7 @@ async function downloadReport(){
 document.getElementById('next-btn').onclick=()=>{
   if(G.day>=20){generateReport();return;}
   G.day++;
-  document.getElementById('day-lbl').textContent='Day '+G.day;
+  document.getElementById('day-lbl').textContent='第 '+G.day;
   const news=NEWS.find(e=>e.day===G.day);
   const nb=document.getElementById('news-b');
   if(news){nb.textContent=news.msg;nb.className='news-bar show';}else{nb.className='news-bar';}
@@ -928,10 +923,23 @@ document.getElementById('reset-btn').onclick=()=>{
   selCode=null;mode='long';initG();setMode('long');renderAll();
 };
 
-window.addEventListener('resize',()=>{if(selCode)setTimeout(()=>drawKline(selCode),50);});
-window.addEventListener('orientationchange',()=>{setTimeout(()=>{if(selCode)drawKline(selCode);},300);});
+window.addEventListener('resize',()=>{if(selCode)drawKline(selCode);});
+
+/* size kline canvas properly after layout */
+function initKlineSize(){
+  const wrap=document.getElementById('kline-wrap');
+  const canv=document.getElementById('kline');
+  const w=wrap.clientWidth||360;
+  const h=wrap.clientHeight>40?wrap.clientHeight:220;
+  canv.width=w;canv.height=h;
+}
 
 initG();setMode('long');renderAll();
+setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},150);
+
+window.addEventListener('orientationchange',()=>{
+  setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},300);
+});
 </script>
 </body>
 </html>
