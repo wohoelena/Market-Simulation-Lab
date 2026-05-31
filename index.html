@@ -516,9 +516,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="rpt-overlay" id="rpt-overlay">
   <div class="rpt-modal">
     <div class="rpt-bar">
-      <h2>📊 Trading Style Report</h2>
+      <h2>📊 My Trading Report</h2>
       <div class="rpt-btns">
-        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Download</button>
+        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Save as Image</button>
         <button class="rpt-btn" onclick="closeReport()">✕ Close</button>
       </div>
     </div>
@@ -975,7 +975,7 @@ JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for
 async function generateReport(){
   document.getElementById('rpt-overlay').className='rpt-overlay show';
   document.getElementById('dl-btn').style.display='none';
-  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is analyzing your trading style…</div>';
+  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is generating your personalised trading report…</div>';
   try{
     const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
     const data=await resp.json();
@@ -1007,7 +1007,7 @@ function renderReport(r){
   <div id="report-card">
     <div class="rc-hdr">
       <div class="rc-logo">📈</div>
-      <div><div class="rc-title">Trading Simulation Report · Advanced</div><div class="rc-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
+      <div><div class="rc-title">My Trading Report · Advanced</div><div class="rc-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
     </div>
     <div class="rc-persona">
       <div style="background:${pi.bg};border-radius:12px;width:80px;height:80px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:4px">${PSVG[pk]}</div>
@@ -1077,7 +1077,7 @@ async function downloadReport(){
     if(modal){modal.style.overflow=prevOverflow;modal.style.maxHeight=prevMaxH;}
     alert('Download failed: '+e.message);
   }
-  btn.textContent='⬇ Download';btn.disabled=false;
+  btn.textContent='⬇ Save as Image';btn.disabled=false;
 }
 
 document.getElementById('next-btn').onclick=()=>{
@@ -1098,7 +1098,7 @@ document.getElementById('next-btn').onclick=()=>{
     s.candles.push(genOHLC(prev,np));s.price=np;s.history.push(np);
   });
   checkSLTP();
-  if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
+  if(G.day===20)document.getElementById('next-btn').textContent='Generate My Report →';
   renderAll();
   if(G.day>=20) showDaySummary(prevPrices, prevTotal);
 };
@@ -1190,7 +1190,7 @@ function showDaySummary(prevPrices, prevTotal){
     body += `<div class="ds-stock-row"><span class="ds-stock-name">${s.name}</span><span class="ds-stock-chg" style="color:${up?'#26a69a':'#ef5350'}">${up?'+':''}${s.chg.toFixed(2)}%</span></div>`;
   });
 
-  body += `<button class="ds-continue-btn" onclick="closeDaySummary()">Generate AI Report →</button>`;
+  body += `<button class="ds-continue-btn" onclick="closeDaySummary()">Generate My Trading Report →</button>`;
 
   document.getElementById('ds-body').innerHTML = body;
   document.getElementById('day-summary-overlay').className = 'day-summary-overlay show';
