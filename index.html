@@ -516,9 +516,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="rpt-overlay" id="rpt-overlay">
   <div class="rpt-modal">
     <div class="rpt-bar">
-      <h2>📊 Trading Style Report</h2>
+      <h2>📊 My Trading My Trading Report</h2>
       <div class="rpt-btns">
-        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Download</button>
+        <button class="rpt-btn" id="dl-btn" style="display:none" onclick="downloadReport()">⬇ Save as Image</button>
         <button class="rpt-btn" onclick="closeReport()">✕ Close</button>
       </div>
     </div>
@@ -975,7 +975,7 @@ JSON:{"styleTag":"2-3 word style","styleColor":"#hex","styleBg":"#darker hex for
 async function generateReport(){
   document.getElementById('rpt-overlay').className='rpt-overlay show';
   document.getElementById('dl-btn').style.display='none';
-  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is analyzing your trading style…</div>';
+  document.getElementById('report-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div>DeepSeek is generating your personalised trading report…</div>';
   try{
     const resp=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
     const data=await resp.json();
@@ -1007,7 +1007,7 @@ function renderReport(r){
   <div id="report-card">
     <div class="rc-hdr">
       <div class="rc-logo">📈</div>
-      <div><div class="rc-title">Trading Simulation Report · Advanced</div><div class="rc-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
+      <div><div class="rc-title">Trading Simulation My Trading Report</div><div class="rc-sub">20-Day Simulation · ${dateStr} · Developed by Elena Zhang</div></div>
     </div>
     <div class="rc-persona">
       <div style="background:${pi.bg};border-radius:12px;width:80px;height:80px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:4px">${PSVG[pk]}</div>
@@ -1065,150 +1065,19 @@ async function downloadReport(){
   try{
     const canvas=await html2canvas(card,{scale:2,backgroundColor:'#1e222d',useCORS:true,logging:false});
     if(modal){modal.style.overflow=prevOverflow;modal.style.maxHeight=prevMaxH;}
-    // Store data and trigger via hidden <a> in DOM
-    const url=canvas.toDataURL('image/png');
-    let a=document.getElementById('_dl_anchor');
-    if(!a){a=document.createElement('a');a.id='_dl_anchor';a.style.display='none';document.body.appendChild(a);}
-    a.href=url;
-    a.download='trading-report.png';
-    a.click();
-    setTimeout(()=>{if(a.parentNode)a.parentNode.removeChild(a);},1000);
+    canvas.toBlob(function(blob){
+      const url=URL.createObjectURL(blob);
+      const newTab=window.open(url,'_blank');
+      if(!newTab){
+        const a=document.createElement('a');
+        a.href=url;a.download='my-trading-report.png';
+        document.body.appendChild(a);a.click();
+        setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},500);
+      }
+    },'image/png');
   }catch(e){
     if(modal){modal.style.overflow=prevOverflow;modal.style.maxHeight=prevMaxH;}
-    alert('Download failed: '+e.message);
+    alert('Failed: '+e.message);
   }
-  btn.textContent='⬇ Download';btn.disabled=false;
+  btn.textContent='⬇ Save as Image';btn.disabled=false;
 }
-
-document.getElementById('next-btn').onclick=()=>{
-  if(G.day>=20){generateReport();return;}
-  // Capture state before advancing
-  const prevPrices={};G.stocks.forEach(s=>{prevPrices[s.code]=s.price;});
-  const prevTotal=G.cash+longVal()+shortMargin()+shortPnl();
-  G.day++;
-  document.getElementById('day-lbl').textContent='Day '+G.day;
-  const news=NEWS.find(e=>e.day===G.day);
-  const nb=document.getElementById('news-b');
-  if(news){nb.textContent=news.msg;nb.className='news-bar show';}else{nb.className='news-bar';}
-  G.stocks.forEach((s,i)=>{
-    const prev=s.price;let eff=1;
-    if(news)eff=news.stock===null?news.eff:(s.code===news.stock?news.eff:1+(Math.random()-0.5)*0.01);
-    const noise=1+(Math.random()-0.5)*STOCKS[i].vol*2;
-    const np=Math.max(1,+(prev*eff*noise).toFixed(2));
-    s.candles.push(genOHLC(prev,np));s.price=np;s.history.push(np);
-  });
-  checkSLTP();
-  if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
-  renderAll();
-  if(G.day>=20) showDaySummary(prevPrices, prevTotal);
-};
-
-document.getElementById('reset-btn').onclick=()=>{
-  document.getElementById('news-b').className='news-bar';
-  document.getElementById('day-lbl').textContent='Day 1';
-  document.getElementById('next-btn').textContent='Next Day →';
-  document.getElementById('c-title').textContent='Select a stock to view chart';
-  document.getElementById('c-info').textContent='';
-  document.getElementById('trade-stock-label').textContent='Select a stock';
-  document.getElementById('tp-price').textContent='—';
-  document.getElementById('tp-held').textContent='';
-  document.getElementById('tp-cost').textContent='';
-  const c=document.getElementById('kline');c.getContext('2d').clearRect(0,0,c.width,c.height);
-  selCode=null;mode='long';initG();setMode('long');renderAll();
-};
-
-window.addEventListener('resize',()=>{if(selCode)drawKline(selCode);});
-
-/* size kline canvas properly after layout */
-function initKlineSize(){
-  const wrap=document.getElementById('kline-wrap');
-  const canv=document.getElementById('kline');
-  const w=wrap.clientWidth||360;
-  const h=wrap.clientHeight>40?wrap.clientHeight:220;
-  canv.width=w;canv.height=h;
-}
-
-initG();setMode('long');renderAll();
-setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},150);
-
-
-function showDaySummary(prevPrices, prevTotal){
-  const total = G.cash + longVal() + shortMargin() + shortPnl();
-  const pnl = total - G.init;
-  const pnlPct = (pnl / G.init * 100).toFixed(2);
-
-  // Best & worst stocks over 20 days
-  const stockPerf = G.stocks.map(s => {
-    const start = s.history[0] || s.base;
-    const end = s.price;
-    const chg = (end - start) / start * 100;
-    return {name: s.name, code: s.code, chg, start, end};
-  }).sort((a,b) => b.chg - a.chg);
-
-  // Trade stats
-  const buys = G.tradeLog.filter(t=>t.action==='buy').length;
-  const sells = G.tradeLog.filter(t=>t.action==='sell').length;
-  const shorts = G.tradeLog.filter(t=>t.action==='short').length;
-  const covers = G.tradeLog.filter(t=>t.action==='cover').length;
-  const newsTrades = G.tradeLog.filter(t=>t.news).length;
-  const stocks = new Set(G.tradeLog.map(t=>t.code)).size;
-
-  // Score
-  const sc = calcScores();
-
-  document.getElementById('ds-title').textContent = '20-Day Summary';
-
-  let body = '';
-
-  // Performance
-  body += `<div class="ds-section-title">Final Performance</div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Final Assets</span><span class="ds-val">${fmt(total)}</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Total P&L</span><span class="ds-val ${pnl>=0?'up':'dn'}">${pnl>=0?'+':''}${fmt(pnl)}</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Return</span><span class="ds-val ${pnl>=0?'up':'dn'}">${pnl>=0?'+':''}${pnlPct}%</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">SL Triggered</span><span class="ds-val ${G.slT>0?'dn':''}">${G.slT} time(s)</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">TP Triggered</span><span class="ds-val ${G.tpT>0?'up':''}">${G.tpT} time(s)</span></div>`;
-
-  // Trade activity
-  body += `<div class="ds-section-title">Trading Activity</div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Total Trades</span><span class="ds-val">${G.tradeLog.length}</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Buy / Sell</span><span class="ds-val">${buys} / ${sells}</span></div>`;
-  if(shorts||covers) body += `<div class="ds-row"><span class="ds-lbl">Short / Cover</span><span class="ds-val">${shorts} / ${covers}</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Stocks Traded</span><span class="ds-val">${stocks}</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">News-Day Trades</span><span class="ds-val">${newsTrades} / 11 events</span></div>`;
-
-  // Position scores
-  body += `<div class="ds-section-title">Position Scores</div>`;
-  const sc_color = v => v>=80?'#26a69a':v>=60?'#f59f00':'#ef5350';
-  body += `<div class="ds-row"><span class="ds-lbl">Diversification</span><span class="ds-val" style="color:${sc_color(sc.div)}">${sc.div} pts</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Risk Control</span><span class="ds-val" style="color:${sc_color(sc.risk)}">${sc.risk} pts</span></div>`;
-  body += `<div class="ds-row"><span class="ds-lbl">Discipline</span><span class="ds-val" style="color:${sc_color(sc.disc)}">${sc.disc} pts</span></div>`;
-
-  // Stock performance
-  body += `<div class="ds-section-title">Stock Performance (20 Days)</div>`;
-  stockPerf.forEach(s => {
-    const up = s.chg >= 0;
-    body += `<div class="ds-stock-row"><span class="ds-stock-name">${s.name}</span><span class="ds-stock-chg" style="color:${up?'#26a69a':'#ef5350'}">${up?'+':''}${s.chg.toFixed(2)}%</span></div>`;
-  });
-
-  body += `<button class="ds-continue-btn" onclick="closeDaySummary()">Generate AI Report →</button>`;
-
-  document.getElementById('ds-body').innerHTML = body;
-  document.getElementById('day-summary-overlay').className = 'day-summary-overlay show';
-}
-function closeDaySummary(){
-  document.getElementById('day-summary-overlay').className = 'day-summary-overlay';
-  if(G.day>=20) generateReport();
-}
-
-window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},300);
-});
-
-function enterFromSplash(){
-  const s=document.getElementById('splash-screen');
-  if(s){s.style.transition='opacity .4s';s.style.opacity='0';setTimeout(()=>s.remove(),420);}
-  document.getElementById('disc-overlay').style.display='flex';
-}
-</script>
-</body>
-</html>
