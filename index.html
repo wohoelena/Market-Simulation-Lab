@@ -256,6 +256,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .footer-bar{height:auto!important;padding:8px 14px;flex-direction:column;gap:2px;text-align:center;font-size:10px}
   .footer-bar span:last-child{display:none}
 }
+
+.day-summary-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:150;align-items:center;justify-content:center;padding:20px}
+.day-summary-overlay.show{display:flex}
+.day-summary-modal{background:#1e222d;border:0.5px solid #363a45;border-radius:10px;width:100%;max-width:380px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.day-summary-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:0.5px solid #2a2e39}
+.day-summary-bar h3{font-size:13px;font-weight:500;color:#d1d4dc}
+.day-summary-close{font-size:11px;background:#2a2e39;color:#787b86;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-family:inherit}
+.day-summary-body{padding:14px 16px;overflow-y:auto;flex:1}
+.ds-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #1a1f2e}
+.ds-row:last-child{border-bottom:none}
+.ds-lbl{font-size:11px;color:#787b86}
+.ds-val{font-size:12px;font-weight:500;color:#d1d4dc}
+.ds-val.up{color:#26a69a}.ds-val.dn{color:#ef5350}
+.ds-section-title{font-size:10px;color:#4c505c;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 6px}
+.ds-stock-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.ds-stock-name{font-size:11px;color:#787b86}
+.ds-stock-chg{font-size:11px;font-weight:500}
+.ds-continue-btn{width:100%;padding:10px;font-size:13px;font-weight:500;color:#fff;background:#2962ff;border:none;border-radius:6px;cursor:pointer;font-family:inherit;margin-top:12px}
 </style>
 </head>
 <body>
@@ -446,12 +464,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="sl-tp-box">
           <div class="sl-tp-lbl">🛡 Stop-Loss / Take-Profit</div>
           <div class="sl-tp-row">
-            <span class="sl-label sl">Stop-Loss</span>
+            <span class="sl-label sl" id="sl-label-text">Stop-Loss</span>
             <input type="number" id="sl-price" class="sl-input" placeholder="Auto-sell below" step="0.01">
             <span style="font-size:10px;color:var(--tv-text2)" id="sl-hint"></span>
           </div>
           <div class="sl-tp-row">
-            <span class="sl-label tp">Take-Profit</span>
+            <span class="sl-label tp" id="tp-label-text">Take-Profit</span>
             <input type="number" id="tp-price-input" class="sl-input" placeholder="Auto-sell above" step="0.01">
           </div>
           <div style="font-size:10px;color:var(--tv-text2);margin-top:4px">Auto-checked each day</div>
@@ -481,6 +499,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="font-size:9px;color:var(--tv-text2);line-height:1.5;max-width:720px;margin:0 auto"><strong>Disclaimer:</strong> This simulator is for educational and training purposes only. All stocks, prices, news events, and market movements are entirely fictional and do not represent any real securities or financial markets. Nothing herein constitutes investment advice or a recommendation of any financial product. No real funds are involved. Simulated results do not predict real-world performance. Always consult a licensed financial advisor before making real investment decisions.</div>
   </div>
 
+</div>
+
+
+<div class="day-summary-overlay" id="day-summary-overlay">
+  <div class="day-summary-modal">
+    <div class="day-summary-bar">
+      <h3 id="ds-title">20-Day Summary</h3>
+      <button class="day-summary-close" onclick="closeDaySummary()">Skip →</button>
+    </div>
+    <div class="day-summary-body" id="ds-body"></div>
+  </div>
 </div>
 
 <!-- Report Modal -->
@@ -643,17 +672,39 @@ function checkSLTP(){
   Object.entries(G.sltp).forEach(([code,rules])=>{
     const s=G.stocks.find(x=>x.code===code);
     if(!s)return;
-    const qty=G.longs[code]||0;
-    if(qty<=0){delete G.sltp[code];return;}
-    if(rules.sl&&s.price<=rules.sl){
-      const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.slT++;
-      G.tradeLog.push({day:G.day,action:'sl',code,qty,price:s.price,news:false});
-      addLog(`🛡 Day ${G.day} [STOP-LOSS] ${s.name} fell to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'warn');
-    }else if(rules.tp&&s.price>=rules.tp){
-      const v=s.price*qty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.tpT++;
-      G.tradeLog.push({day:G.day,action:'tp',code,qty,price:s.price,news:false});
-      addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} rose to $${s.price.toFixed(2)}. Sold ×${qty}. ${fmt(v)}`,'ok');
+    const longQty=G.longs[code]||0;
+    const shortPos=G.shorts[code];
+    // Long SL/TP: SL triggers when price falls below, TP when price rises above
+    if(longQty>0){
+      if(rules.sl&&s.price<=rules.sl){
+        const v=s.price*longQty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.slT++;
+        G.tradeLog.push({day:G.day,action:'sl',code,qty:longQty,price:s.price,news:false});
+        addLog(`🛡 Day ${G.day} [STOP-LOSS] ${s.name} fell to $${s.price.toFixed(2)}. Sold ×${longQty}. ${fmt(v)}`,'warn');
+      }else if(rules.tp&&s.price>=rules.tp){
+        const v=s.price*longQty;G.cash+=v;delete G.longs[code];delete G.sltp[code];G.tpT++;
+        G.tradeLog.push({day:G.day,action:'tp',code,qty:longQty,price:s.price,news:false});
+        addLog(`🎯 Day ${G.day} [TAKE-PROFIT] ${s.name} rose to $${s.price.toFixed(2)}. Sold ×${longQty}. ${fmt(v)}`,'ok');
+      }
     }
+    // Short SL/TP: SL triggers when price RISES above (loss), TP when price FALLS below (profit)
+    if(shortPos&&shortPos.qty>0){
+      const qty=shortPos.qty;
+      if(rules.sl&&s.price>=rules.sl){
+        const pnl=(shortPos.entryPrice-s.price)*qty;
+        G.cash-=s.price*qty;G.cash+=shortPos.margin;
+        delete G.shorts[code];delete G.sltp[code];G.slT++;
+        G.tradeLog.push({day:G.day,action:'sl',code,qty,price:s.price,news:false});
+        addLog(`🛡 Day ${G.day} [SHORT STOP-LOSS] ${s.name} rose to $${s.price.toFixed(2)}. Covered ×${qty}. P&L: ${pnl>=0?'+':''}${fmt(pnl)}`,'warn');
+      }else if(rules.tp&&s.price<=rules.tp){
+        const pnl=(shortPos.entryPrice-s.price)*qty;
+        G.cash-=s.price*qty;G.cash+=shortPos.margin;
+        delete G.shorts[code];delete G.sltp[code];G.tpT++;
+        G.tradeLog.push({day:G.day,action:'tp',code,qty,price:s.price,news:false});
+        addLog(`🎯 Day ${G.day} [SHORT TAKE-PROFIT] ${s.name} fell to $${s.price.toFixed(2)}. Covered ×${qty}. P&L: +${fmt(pnl)}`,'ok');
+      }
+    }
+    // Clean up if no position
+    if(!G.longs[code]&&!G.shorts[code])delete G.sltp[code];
   });
 }
 
@@ -778,15 +829,27 @@ document.getElementById('qty').oninput=updateCost;
 function setMode(m){
   mode=m;
   const ml=document.getElementById('mode-long'),ms=document.getElementById('mode-short');
+  const slLbl=document.getElementById('sl-label-text');
+  const tpLbl=document.getElementById('tp-label-text');
+  const slPh=document.getElementById('sl-price');
+  const tpPh=document.getElementById('tp-price-input');
   if(m==='long'){
     ml.className='mode-btn mode-long';ms.className='mode-btn mode-short-off';
     document.getElementById('short-tip').style.display='none';
     document.getElementById('sl-tp-sec').style.display='block';
+    if(slLbl)slLbl.textContent='Stop-Loss';
+    if(tpLbl)tpLbl.textContent='Take-Profit';
+    if(slPh)slPh.placeholder='Auto-sell below';
+    if(tpPh)tpPh.placeholder='Auto-sell above';
     document.getElementById('trade-btns').innerHTML='<button class="btn-buy" onclick="doBuy()">Buy (Long)</button><button class="btn-sell" onclick="doSell()">Sell (Close Long)</button>';
   }else{
     ml.className='mode-btn mode-short-off';ms.className='mode-btn mode-short-on';
     document.getElementById('short-tip').style.display='block';
-    document.getElementById('sl-tp-sec').style.display='none';
+    document.getElementById('sl-tp-sec').style.display='block';
+    if(slLbl)slLbl.textContent='Stop-Loss (cover if rises above)';
+    if(tpLbl)tpLbl.textContent='Take-Profit (cover if falls below)';
+    if(slPh)slPh.placeholder='Auto-cover above this price';
+    if(tpPh)tpPh.placeholder='Auto-cover below this price';
     document.getElementById('trade-btns').innerHTML='<button class="btn-sell" onclick="doShort()">Sell Short (Open)</button><button class="btn-cover" onclick="doCover()">Buy to Cover</button>';
   }
   updateCost();
@@ -832,8 +895,10 @@ function doShort(){
   if(m>G.cash){addLog(`❌ Insufficient margin. Need ${fmt(m)}.`,'er');renderLog();return;}
   if(G.shorts[selCode]){addLog('❌ Close existing short first.','er');renderLog();return;}
   G.cash-=m;G.cash+=s.price*qty;G.shorts[selCode]={qty,entryPrice:s.price,margin:m};
+saveSLTP(selCode);
   G.tradeLog.push({day:G.day,action:'short',code:selCode,qty,price:s.price,news:isNews()});
-  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @$${s.price.toFixed(2)}. Margin: ${fmt(m)}`,'ok');
+  const rs=G.sltp[selCode];
+  addLog(`✅ Day ${G.day} — Shorted ${s.name} ×${qty} @$${s.price.toFixed(2)}. Margin: ${fmt(m)}${rs&&rs.sl?' SL:$'+rs.sl:''}${rs&&rs.tp?' TP:$'+rs.tp:''}`,'ok');
   renderAll();
 }
 function doCover(){
@@ -1017,6 +1082,9 @@ async function downloadReport(){
 
 document.getElementById('next-btn').onclick=()=>{
   if(G.day>=20){generateReport();return;}
+  // Capture state before advancing
+  const prevPrices={};G.stocks.forEach(s=>{prevPrices[s.code]=s.price;});
+  const prevTotal=G.cash+longVal()+shortMargin()+shortPnl();
   G.day++;
   document.getElementById('day-lbl').textContent='Day '+G.day;
   const news=NEWS.find(e=>e.day===G.day);
@@ -1032,6 +1100,7 @@ document.getElementById('next-btn').onclick=()=>{
   checkSLTP();
   if(G.day===20)document.getElementById('next-btn').textContent='Generate Report →';
   renderAll();
+  if(G.day>=20) showDaySummary(prevPrices, prevTotal);
 };
 
 document.getElementById('reset-btn').onclick=()=>{
@@ -1061,6 +1130,75 @@ function initKlineSize(){
 
 initG();setMode('long');renderAll();
 setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},150);
+
+
+function showDaySummary(prevPrices, prevTotal){
+  const total = G.cash + longVal() + shortMargin() + shortPnl();
+  const pnl = total - G.init;
+  const pnlPct = (pnl / G.init * 100).toFixed(2);
+
+  // Best & worst stocks over 20 days
+  const stockPerf = G.stocks.map(s => {
+    const start = s.history[0] || s.base;
+    const end = s.price;
+    const chg = (end - start) / start * 100;
+    return {name: s.name, code: s.code, chg, start, end};
+  }).sort((a,b) => b.chg - a.chg);
+
+  // Trade stats
+  const buys = G.tradeLog.filter(t=>t.action==='buy').length;
+  const sells = G.tradeLog.filter(t=>t.action==='sell').length;
+  const shorts = G.tradeLog.filter(t=>t.action==='short').length;
+  const covers = G.tradeLog.filter(t=>t.action==='cover').length;
+  const newsTrades = G.tradeLog.filter(t=>t.news).length;
+  const stocks = new Set(G.tradeLog.map(t=>t.code)).size;
+
+  // Score
+  const sc = calcScores();
+
+  document.getElementById('ds-title').textContent = '20-Day Summary';
+
+  let body = '';
+
+  // Performance
+  body += `<div class="ds-section-title">Final Performance</div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Final Assets</span><span class="ds-val">${fmt(total)}</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Total P&L</span><span class="ds-val ${pnl>=0?'up':'dn'}">${pnl>=0?'+':''}${fmt(pnl)}</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Return</span><span class="ds-val ${pnl>=0?'up':'dn'}">${pnl>=0?'+':''}${pnlPct}%</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">SL Triggered</span><span class="ds-val ${G.slT>0?'dn':''}">${G.slT} time(s)</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">TP Triggered</span><span class="ds-val ${G.tpT>0?'up':''}">${G.tpT} time(s)</span></div>`;
+
+  // Trade activity
+  body += `<div class="ds-section-title">Trading Activity</div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Total Trades</span><span class="ds-val">${G.tradeLog.length}</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Buy / Sell</span><span class="ds-val">${buys} / ${sells}</span></div>`;
+  if(shorts||covers) body += `<div class="ds-row"><span class="ds-lbl">Short / Cover</span><span class="ds-val">${shorts} / ${covers}</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Stocks Traded</span><span class="ds-val">${stocks}</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">News-Day Trades</span><span class="ds-val">${newsTrades} / 11 events</span></div>`;
+
+  // Position scores
+  body += `<div class="ds-section-title">Position Scores</div>`;
+  const sc_color = v => v>=80?'#26a69a':v>=60?'#f59f00':'#ef5350';
+  body += `<div class="ds-row"><span class="ds-lbl">Diversification</span><span class="ds-val" style="color:${sc_color(sc.div)}">${sc.div} pts</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Risk Control</span><span class="ds-val" style="color:${sc_color(sc.risk)}">${sc.risk} pts</span></div>`;
+  body += `<div class="ds-row"><span class="ds-lbl">Discipline</span><span class="ds-val" style="color:${sc_color(sc.disc)}">${sc.disc} pts</span></div>`;
+
+  // Stock performance
+  body += `<div class="ds-section-title">Stock Performance (20 Days)</div>`;
+  stockPerf.forEach(s => {
+    const up = s.chg >= 0;
+    body += `<div class="ds-stock-row"><span class="ds-stock-name">${s.name}</span><span class="ds-stock-chg" style="color:${up?'#26a69a':'#ef5350'}">${up?'+':''}${s.chg.toFixed(2)}%</span></div>`;
+  });
+
+  body += `<button class="ds-continue-btn" onclick="closeDaySummary()">Generate AI Report →</button>`;
+
+  document.getElementById('ds-body').innerHTML = body;
+  document.getElementById('day-summary-overlay').className = 'day-summary-overlay show';
+}
+function closeDaySummary(){
+  document.getElementById('day-summary-overlay').className = 'day-summary-overlay';
+  if(G.day>=20) generateReport();
+}
 
 window.addEventListener('orientationchange',()=>{
   setTimeout(()=>{initKlineSize();if(selCode)drawKline(selCode);},300);
