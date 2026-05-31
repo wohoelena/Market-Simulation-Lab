@@ -528,11 +528,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 
-document.addEventListener('gesturestart',function(e){e.preventDefault();});
-document.addEventListener('gesturechange',function(e){e.preventDefault();});
-document.addEventListener('gestureend',function(e){e.preventDefault();});
-document.addEventListener('touchmove',function(e){if(e.touches.length>1)e.preventDefault();},{passive:false});
-document.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault();},{passive:false});
 const STOCKS=[
   {code:'TECH',name:'Tech Giant',base:120,vol:0.04,sector:'Technology'},
   {code:'BANK',name:'Big Bank',base:45,vol:0.02,sector:'Financials'},
