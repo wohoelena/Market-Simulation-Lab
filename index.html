@@ -373,9 +373,8 @@ button:active{transform:translateY(0)}
       <span style="font-size:10px;color:#7ab8f5;letter-spacing:.12em;text-transform:uppercase">A Policy Alpha Research Project</span>
     </div>
     <div style="width:56px;height:56px;border-radius:14px;background:#1e222d;border:0.5px solid #363a45;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px">📈</div>
-    <div style="font-size:11px;color:#787b86;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px">Market Lab</div>
-    <div style="font-size:30px;font-weight:500;color:#d1d4dc;line-height:1.25;margin-bottom:8px">Discover Your<br><span style="color:#26a69a">Trading DNA</span></div>
-    <div style="font-size:13px;color:#787b86;line-height:1.7;margin-bottom:32px">A 20-day immersive simulation<br>Uncover your market personality</div>
+    <div style="font-size:11px;color:#787b86;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px">Market Lab Pro</div>
+    <div style="font-size:30px;font-weight:500;color:#d1d4dc;line-height:1.25;margin-bottom:8px">20-Day Trading<br><span style="color:#26a69a">Simulation & Risk Review</span></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
       <div style="flex:1;height:0.5px;background:#2a2e39"></div>
       <div style="font-size:10px;color:#4c505c;letter-spacing:.1em">ADVANCED EDITION</div>
@@ -1012,10 +1011,14 @@ function drawKline(code){
   const simStart=s.simStartIndex||0;
   if(simStart>0&&simStart<n){
     const x=toX(simStart);
+    ctx.fillStyle='rgba(143,183,255,.035)';
+    ctx.fillRect(pL,pT,Math.max(0,x-pL),cH);
+    ctx.fillStyle='rgba(143,183,255,.7)';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('Historical reference',pL+6,pT+4);
     ctx.strokeStyle='rgba(143,183,255,.55)';ctx.lineWidth=1;ctx.setLineDash([2,4]);
     ctx.beginPath();ctx.moveTo(x,pT);ctx.lineTo(x,pT+cH);ctx.stroke();ctx.setLineDash([]);
     ctx.fillStyle='#8fb7ff';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
-    ctx.fillText('Simulation starts',Math.min(x+4,W-pR-92),pT+4);
+    ctx.fillText('Simulation starts '+candleLabel(s,simStart),Math.min(x+4,W-pR-150),pT+4);
   }
   const step=Math.max(2,Math.ceil(n/6));
   const labelY=H-pB+16;
